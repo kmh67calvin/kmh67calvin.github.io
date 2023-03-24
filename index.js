@@ -1,5 +1,6 @@
 function main() {
-    let edit = document.getElementById("edit").innerHTML = "hello";
+    let edit = document.getElementById("edit");
+    edit.innerHTML = "hello";
 }
 
 
