@@ -58,13 +58,15 @@ clearCells = () => {
 }
 
 compile = () => {
+    reset();
     if(interpretEditor()) {
-        reset();
         setInputToTape();
         displayTape();
         mainUpdate = setInterval(function() {
             doNext(currentState, getCharAtCurrentCell());
         }, speed);
+    } else {
+        alert("Issue encountered in code!");
     }
 }
 
@@ -148,21 +150,32 @@ interpretEditor = () => {
     // Remove the first 9 lines, leaving only the transitions
     lines.splice(0, 9);
     
-    lines.forEach(line => interpretTransitions(line));
+    // lines.forEach((line) => {
+    //     if(!interpretTransitions(line)) {
+    //         return false;
+    //     }
+    // });
+
+    for(let i = 0; i < lines.length; i++) {
+        if(!interpretTransitions(lines[i])) {
+            return false;
+        }
+    }
     return true;
 }
 
 interpretTransitions = (transitionToInterpret) => {
-    if(transitionToInterpret.toLowerCase() == "end") {
+    let transitionText = removeComment(transitionToInterpret);
+    if(transitionText.toLowerCase() == "end") {
         return true;
     }
 
-    let transitionInfo = removeComment(transitionToInterpret).split(" ");
+    let transitionInfo = transitionText.split(" ");
     if(transitionInfo.length != 5) {
         return false;
     }
     // Check if the next character is part of the tape alphabet
-    if(!tapeAlphabet.includes(transitionInfo[3])) {
+    if(!tapeAlphabet.includes(transitionInfo[3]) || !tapeAlphabet.includes(transitionInfo[1])) {
         return false;
     }
     transitions[transitionInfo[0] + "," + transitionInfo[1]] = {nextState: transitionInfo[2], nextCellValue: transitionInfo[3], nextDirection: transitionInfo[4]};
