@@ -3,6 +3,10 @@ h1 {
     font-family: "Times New Roman", Times, serif;
     font-size: 45px;
 }
+.headerDiv{
+    text-align: center;
+}
+
 
 .editorDiv {
     text-align: center;
