@@ -128,6 +128,7 @@ toggleDarkMode = () => {
     document.body.classList.toggle("darkMode");
     squares.forEach(square => square.classList.toggle("squareDarkMode"));
     input.classList.toggle("inputDarkMode");
+    document.querySelector(".box").classList.toggle("boxDarkMode");
 }
 
 updateCurrentState = () => {
