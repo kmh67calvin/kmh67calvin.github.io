@@ -8,9 +8,25 @@ h1 {
     text-align: center;
 }
 
+.box {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
 
 .editorDiv {
     text-align: center;
+}
+
+vAlign{
+    text-align: top;
+}
+
+.spaces{
+    margin-bottom: 25px;
+}
+
+input{
+    width: 300px;
+    height: 25px;
 }
 
 textarea {

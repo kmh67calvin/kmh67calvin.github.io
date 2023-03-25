@@ -4,7 +4,9 @@
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
+    <div class="box">
     <h1>Turing Machine Simulator</h1>
+    </div>
     <div class="headerDiv">
     <p>This Turing machine simulator is a mathematical model that mimics an abstract machine. This machine
         manipulates symbols on a strip of tape according to its rules.  </p>
@@ -13,9 +15,11 @@
     <!--Editor-->
     <div class="editorDiv">
         <label for="input">Input</label><br>
-        <input type="text" class="input" name="input"></input><br>
+        <input type="text" class="input spaces" name="input"></input><br>
+    </div>
+    <div class="editorDiv">
         <label for="editor">Edit the Turing Machine</label><br>
-        <textarea class="editor" name="editor" rows="20" cols="100"></textarea><br>
+        <textarea class="editor spaces" name="editor" rows="20" cols="100"></textarea><br>
         <button onclick="compile()">Compile</button>
     </div>
 
