@@ -28,8 +28,13 @@ EXAMPLE: Bitstrings that start with 0 // Machine Name\n\
 1 // WIP! Numbers of Tracks on Tape 0\n\
 2 // Tape 0 is 2-way infinite\n\
 s0 // Initial State\n\
-s1 // Final State(s)\n\
-s0 0 s1 1 R // Transitions <state> <cell value> <next state> <next cell value> <next direction>\n\
+s1 // Accepting State(s)\n\
+s0 0 s1 0 R // Transitions <state> <cell value> <next state> <next cell value> <next direction>\n\
+s0 1 s2 1 R\n\
+s1 0 s1 0 R\n\
+s1 1 s1 1 R\n\
+s2 0 s2 0 R\n\
+s2 1 s2 1 R\n\
 END // Specify end\
 '
 });
@@ -119,8 +124,8 @@ reset = () => {
     displayTape();
     inputAlphabet = [];
     tapeAlphabet = [];
-    numberOfTapes = 0;
-    numberOfTracksOnTape0 = 0;
+    // numberOfTapes = 0;
+    // numberOfTracksOnTape0 = 0;
     infiniteDirections = 0;
     startState = "";
     finalStates = "";
@@ -162,8 +167,8 @@ load = () => {
 let inputAlphabet = [];
 let tapeAlphabet = [];
 let numberOfTapes = 0;
-let numberOfTracksOnTape0 = 0;
-let infiniteDirections = 0;
+// let numberOfTracksOnTape0 = 0; // Ignored
+// let infiniteDirections = 0;
 let startState = "";
 let finalStates = "";
 let transitions = Object.create(null);
@@ -184,13 +189,10 @@ interpretEditor = () => {
     inputAlphabet = removeComment(lines[2]).split(" ");
     tapeAlphabet = removeComment(lines[3]).split(" ");
     numberOfTapes = removeComment(lines[4]).split(" ");
-    
-    numberOfTracksOnTape0 = removeComment(lines[5]).split(" ");
-    infiniteDirections = removeComment(lines[6]).split(" ");
-    startState, currentState = removeComment(lines[7]).split(" ");
-    finalStates = removeComment(lines[8]).split(" ");
+    startState, currentState = removeComment(lines[(2 * numberOfTapes) + 5]).split(" ");
+    finalStates = removeComment(lines[(2 * numberOfTapes) + 6]).split(" ");
     // Remove the first 9 lines, leaving only the transitions
-    lines.splice(0, 9);
+    lines.splice(0, (2 * numberOfTapes) + 7);
 
     // Interpret lines describing transition functions
     for(let i = 0; i < lines.length; i++) {
