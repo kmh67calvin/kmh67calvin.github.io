@@ -3,8 +3,17 @@ const squares = document.querySelectorAll(".square");
 const machine = document.querySelector(".machineDiv");
 const speedInput = document.getElementById("speedSlider");
 const showCurrentState = document.getElementById("currentState");
+const loader = document.getElementById("loader");
+const fr = new FileReader();
 let mainUpdate;
-machine.style.left = "0px";
+
+loader.addEventListener('change', (event) => {
+    fr.readAsText(loader.files[0]);
+});
+
+fr.addEventListener('load', (event) => {
+    editor.setValue(event.target.result);
+});
 
 let editor = CodeMirror(document.querySelector(".editor"), {
     lineNumbers: true,
@@ -135,6 +144,10 @@ download = () => {
         type: "text/plain;charset=utf-8"
     });
     saveAs(fileData, fileName);
+}
+
+load = () => {
+    loader.click();
 }
 
 // Interpretation
