@@ -1,12 +1,12 @@
-const input = document.querySelector(".input");
+const input = document.querySelectorAll(".input");
 const machine = document.querySelector(".machineDiv");
-const squares = document.querySelectorAll(".square");
 const speedInput = document.getElementById("speedSlider");
 const showCurrentState = document.getElementById("currentState");
 const loader = document.getElementById("loader");
 const tapes = document.getElementById("tapes");
 const fr = new FileReader();
 let mainUpdate;
+let squares = [];
 
 loader.addEventListener('change', (event) => {
     fr.readAsText(loader.files[0]);
@@ -39,31 +39,34 @@ END // Specify end\
 '
 });
 
-let cells = [];
-let leftCells = [];
-let currentCell = 0;
+let cellsPerTrack = [];
+let leftCellsPerTrack = [];
+let currentCellPerTape = [];
 let speed = 1001 - speedInput.value;
+let totalNumberOfTracks = 0;
 
-setInputToTape = () => {
-    for(let i = 0; i < input.value.length; i++) {
-        cells.push(input.value[i]);
+setInputToTrack = (trackIdx) => {
+    cellsPerTrack.push([]);
+    for(let i = 0; i < input[trackIdx].value.length; i++) {
+        cellsPerTrack[trackIdx][i].push(input[trackIdx].value[i]);
     }
 }
 
-displayTape = () => {
+displayTrack = (trackIdx) => {
     let cellValue = "";
-    for(let squareIdx = 0, cellIdx = (currentCell - 4); squareIdx < squares.length; squareIdx++, cellIdx++) {
+    // 9 for 9 squares in a track
+    for(let squareIdx = 0, cellIdx = (currentCell - 4); squareIdx < 9; squareIdx++, cellIdx++) {
         if(cellIdx < 0) {
-            cellValue = leftCells[Math.abs(0 - (cellIdx + 1))];
+            cellValue = leftCellsPerTrack[trackIdx][Math.abs(0 - (cellIdx + 1))];
         } else {
-            cellValue = cells[cellIdx];
+            cellValue = cellsPerTrack[trackIdx][cellIdx];
         }
 
         if(typeof cellValue != "undefined") {
             if(cellValue == "_") {
-                squares[squareIdx].innerHTML = "";
+                squares[trackIdx][squareIdx].innerHTML = "";
             } else {
-                squares[squareIdx].innerHTML = cellValue;
+                squares[trackIdx][squareIdx].innerHTML = cellValue;
             }
         } else {
             squares[squareIdx].innerHTML = "";
@@ -72,32 +75,39 @@ displayTape = () => {
 }
 
 clearCells = () => {
-    cells = [];
-    leftCells = [];
-    currentCell = 0;
+    cellsPerTrack = [];
+    leftCellsPerTrack = [];
+    currentCellPerTape = [];
 }
 
 compile = () => {
+    let lines = editor.getValue().split("\n");
+    numberOfTapes = removeComment(lines[4]).split(" ");
+    for(let i = 0; i < numberOfTapes; i++) {
+        totalNumberOfTracks += parseInt(removeComment(lines[5 + i]).split(" "));
+    }
     reset();
     if(interpretEditor()) {
-        setInputToTape();
-        displayTape();
+        setInputToTrack();
+        displayTrack();
         mainUpdate = setInterval(function() {
-            doNext(currentState, getCharAtCurrentCell());
+            for(let i = 0; i < numberOfTapes; i++) {
+                doNext(currentState, getCharAtCurrentCell(), i);
+            }
         }, speed);
     } else {
         alert("Issue encountered in code!");
     }
 }
 
-moveTapeRight = () => {
-    currentCell++;
-    displayTape();
+moveTapeRight = (tapeIdx) => {
+    currentCellPerTape[tapeIdx]++;
+    displayTrack();
 }
 
-moveTapeLeft = () => {
-    currentCell--;
-    displayTape();
+moveTapeLeft = (tapeIdx) => {
+    currentCellPerTape[tapeIdx]--;
+    displayTrack();
 }
 
 getCharAtCurrentCell = () => {
@@ -119,17 +129,23 @@ speedInput.addEventListener("mouseup", function() {
 }, false);
 
 reset = () => {
+    tapes.innerHTML = "";
     clearInterval(mainUpdate);
     clearCells();
-    displayTape();
+    
+    // for(let i = 0; i < totalNumberOfTracks; i++) {
+    //     displayTrack(i);
+    // }
+    
     inputAlphabet = [];
     tapeAlphabet = [];
-    // numberOfTapes = 0;
-    // numberOfTracksOnTape0 = 0;
-    infiniteDirections = 0;
+    numberOfTapes = [];
+    numberOfTracksPerTape = [];
+    infiniteDirectionsPerTape = [];
     startState = "";
-    finalStates = "";
+    finalStates = [];
     transitions = Object.create(null);
+    currentStatesPerTape = [];
     currentState = "";
     updateCurrentState();
 }
@@ -167,11 +183,12 @@ load = () => {
 let inputAlphabet = [];
 let tapeAlphabet = [];
 let numberOfTapes = 0;
-// let numberOfTracksOnTape0 = 0; // Ignored
-// let infiniteDirections = 0;
+let numberOfTracksPerTape = [];
+let infiniteDirectionsPerTape = [];
 let startState = "";
-let finalStates = "";
+let finalStates = [];
 let transitions = Object.create(null);
+let currentStatesPerTape = [];
 let currentState = "";
 
 interpretEditor = () => {
@@ -189,9 +206,39 @@ interpretEditor = () => {
     inputAlphabet = removeComment(lines[2]).split(" ");
     tapeAlphabet = removeComment(lines[3]).split(" ");
     numberOfTapes = removeComment(lines[4]).split(" ");
-    startState, currentState = removeComment(lines[(2 * numberOfTapes) + 5]).split(" ");
+    for(let i = 0; i < numberOfTapes; i++) {
+        numberOfTracksPerTape.push(parseInt(removeComment(lines[5 + i]).split(" ")));
+        infiniteDirectionsPerTape.push(parseInt(removeComment(lines[parseInt(numberOfTapes) + 5 + i]).split(" ")));
+
+        // Construct the tape in html
+        tapes.innerHTML += "<div id=\"tape" + i + "\">";
+        for(let j = 0; j < numberOfTracksPerTape[i]; j++) {
+            tapes.innerHTML += "\
+<div class=\"machineDiv\" id=\"track" + j + "\">\n\
+    <div class=\"square\"></div>\n\
+    <div class=\"square\"></div>\n\
+    <div class=\"square\"></div>\n\
+    <div class=\"square\"></div>\n\
+    <div class=\"square\"></div>\n\
+    <div class=\"square\"></div>\n\
+    <div class=\"square\"></div>\n\
+    <div class=\"square\"></div>\n\
+    <div class=\"square\"></div>\n\
+</div>\n\
+        "
+        squares.push(document.querySelectorAll("#track" + j + ".square"));
+        }
+        tapes.innerHTML += "\
+<div id=\"head\">\n\
+    <div class=\"triangle center\"></div>\n\
+</div>\n\
+    </div>"
+    }
+
+    startState = removeComment(lines[(2 * numberOfTapes) + 5]).split(" ");
     finalStates = removeComment(lines[(2 * numberOfTapes) + 6]).split(" ");
-    // Remove the first 9 lines, leaving only the transitions
+
+    // Remove the config lines, leaving only the transitions
     lines.splice(0, (2 * numberOfTapes) + 7);
 
     // Interpret lines describing transition functions
@@ -221,8 +268,24 @@ interpretTransitions = (transitionToInterpret) => {
     if(transitionInfo.length != 5) {
         return false;
     }
-    // Check if the proposed next character and given character are part of the tape alphabet and that the next direction is either R or L
-    if(!tapeAlphabet.includes(transitionInfo[3]) || !tapeAlphabet.includes(transitionInfo[1]) || (transitionInfo[4].toLowerCase() != "r" && transitionInfo[4].toLowerCase() != "l")) {
+
+    // Check if the proposed next character and given character is some combination of the tape alphabet
+    let givenCellChars = transitionInfo[1].split("+");
+    for(let i = 0; i < givenCellChars.length; i++) {
+        if(!tapeAlphabet.includes(givenCellChars[i])){
+            return false;
+        }
+    }
+
+    let nextCellChars = transitionInfo[3].split("+");
+    for(let i = 0; i < nextCellChars.length; i++) {
+        if(!tapeAlphabet.includes(nextCellChars[i])){
+            return false;
+        }
+    }
+
+    // And that the next direction is either R or L
+    if(transitionInfo[4].toLowerCase() != "r" && transitionInfo[4].toLowerCase() != "l") {
         return false;
     }
 
@@ -235,7 +298,7 @@ removeComment = (lineToParse) => {
 }
 
 // Executing the machine
-doNext = (state, cellValue) => {
+doNext = (state, cellValue, tapeIdx) => {
     let instructions = transitions[state + "," + cellValue];
     if(typeof instructions != "undefined") {
         currentState = instructions.nextState;
@@ -248,9 +311,9 @@ doNext = (state, cellValue) => {
         }
 
         if(instructions.nextDirection.toLowerCase() == "r") {
-            moveTapeRight();
+            moveTapeRight(tapeIdx);
         } else {
-            moveTapeLeft();
+            moveTapeLeft(tapeIdx);
         }
     } else {
         // Machine has halted
