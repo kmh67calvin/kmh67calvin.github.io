@@ -9,8 +9,8 @@ let editor = CodeMirror(document.querySelector(".editor"), {
     lineNumbers: true,
     tabSize: 4,
     value: '\
-ATM\n\
-<Machine Name>\n\
+ATM // Specify start\n\
+EXAMPLE: Bitstrings that start with 0 // Machine Name\n\
 0 1 // Input Alphabet\n\
 0 1 // Tape Alphabet\n\
 1 // WIP! Number of Tapes\n\
@@ -121,11 +121,11 @@ let currentState = "";
 interpretEditor = () => {
     let lines = editor.getValue().split("\n");
     // Bounding check
-    if(lines[0] != "ATM") {
+    if(removeComment(lines[0]) != "ATM") {
         alert("First line must specify that the program is a Turing Machine file (ATM)!");
         return false;
     }
-    if(lines[lines.length - 1].toLowerCase() != "end") {
+    if(removeComment(lines[lines.length - 1]).toLowerCase() != "end") {
         alert("Last line must specify the end of the program (END)!");
         return false;
     }
