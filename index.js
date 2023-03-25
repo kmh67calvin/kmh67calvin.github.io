@@ -112,6 +112,7 @@ reset = () => {
     finalStates = "";
     transitions = Object.create(null);
     currentState = "";
+    updateCurrentState();
 }
 
 toggleDarkMode = () => {
@@ -120,6 +121,20 @@ toggleDarkMode = () => {
 
 updateCurrentState = () => {
     showCurrentState.innerHTML = currentState;
+}
+
+copy = () => {
+    navigator.clipboard.writeText(editor.getValue());
+    alert("Copied program to clipboard!");
+}
+
+download = () => {
+    let editorData = editor.getValue();
+    let fileName = removeComment(editorData.split("\n")[1]);
+    let fileData = new Blob([editorData], {
+        type: "text/plain;charset=utf-8"
+    });
+    saveAs(fileData, fileName);
 }
 
 // Interpretation

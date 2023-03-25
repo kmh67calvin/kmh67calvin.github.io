@@ -2,8 +2,11 @@
 <html>
 <head>
     <link rel="stylesheet" href="index.css">
+    <!--Code Mirror for code editor https://codemirror.net/-->
     <script src="lib/codemirror.js"></script>
     <link rel="stylesheet" href="lib/codemirror.css">
+    <!--FileSaver for saving programs https://github.com/eligrey/FileSaver.js-->
+    <script src="lib/FileSaver.js"></script>
 </head>
 <body>
     <div class="box">
@@ -22,9 +25,12 @@
 
     <div class="editor centerCodeEditor editorBottomMargin"></div>
 
+    <!--Buttons-->
     <div class="textCenter buttonBottomMargin buttonGroup">
         <button onclick="compile()" class="buttonSideMargin">Compile</button>
         <button onclick="reset()" class="buttonSideMargin">Reset</button>
+        <button onclick="copy()" class="buttonSideMargin">Copy</button>
+        <button onclick="download()" class="buttonSideMargin">Download</button>
     </div>
 
     <!--Information-->
@@ -38,8 +44,6 @@
         <label for="speedSlider">Speed:</label><br>
         <input type="range" min="0" max="1000" value="500" id="speedSlider" name="speedSlider">
     </div>
-
-    
 
     <!--Machine Graphics-->
     <div class="machineDiv">  
