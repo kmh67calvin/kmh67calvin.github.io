@@ -1,6 +1,7 @@
 const input = document.querySelector(".input");
 const squares = document.querySelectorAll(".square");
 const machine = document.querySelector(".machineDiv");
+const speedInput = document.getElementById("speedSlider");
 machine.style.left = "0px";
 
 let editor = CodeMirror(document.querySelector(".editor"), {
@@ -12,7 +13,7 @@ let editor = CodeMirror(document.querySelector(".editor"), {
 let cells = [];
 let leftCells = [];
 let currentCell = 0;
-let speed = 1000;
+let speed = 1001 - speedInput.value;
 
 setInputToTape = () => {
     for(let i = 0; i < input.value.length; i++) {
@@ -24,7 +25,7 @@ displayTape = () => {
     let cellValue = "";
     for(let squareIdx = 0, cellIdx = (currentCell - 4); squareIdx < squares.length; squareIdx++, cellIdx++) {
         if(cellIdx < 0) {
-            cellValue = leftCells[cellIdx];
+            cellValue = leftCells[Math.abs(0 - (cellIdx + 1))];
         } else {
             cellValue = cells[cellIdx];
         }
@@ -40,6 +41,7 @@ displayTape = () => {
 clearCells = () => {
     cells = [];
     leftCells = [];
+    currentCell = 0;
 }
 
 interpretEditor = () => {
@@ -70,7 +72,7 @@ moveTapeLeft = () => {
 getCharAtCurrentCell = () => {
     let character;
     if(currentCell < 0) {
-        character = leftCells[currentCell];
+        character = leftCells[Math.abs(0 - (cellIdx + 1))];;
     } else {
         character = cells[currentCell];
     }
@@ -80,3 +82,7 @@ getCharAtCurrentCell = () => {
     }
     return ""; 
 }
+
+speedInput.addEventListener("change", function() {
+    speed = 1001 - speedInput.value;
+}, false);
