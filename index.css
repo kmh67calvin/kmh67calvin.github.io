@@ -38,11 +38,19 @@ input{
 .square {
     height: 50px;
     width: 50px;
-    background-color: #696969;
+    background-color: #7a7a7a;
     margin: 6px;
     text-align: center;
     line-height: 50px;
     font-weight: bold;
+}
+
+.squareDarkMode {
+    background-color: #696969;
+}
+
+.inputDarkMode {
+    background-color: #bebebe;
 }
 
 .machineDiv {

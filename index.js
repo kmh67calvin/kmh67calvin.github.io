@@ -29,7 +29,7 @@ EXAMPLE: Bitstrings that start with 0 // Machine Name\n\
 s0 // Initial State\n\
 s1 // Final State(s)\n\
 s0 0 s1 1 R // Transitions <state> <cell value> <next state> <next cell value> <next direction>\n\
-end // Specify end\
+END // Specify end\
 '
 });
 
@@ -125,7 +125,9 @@ reset = () => {
 }
 
 toggleDarkMode = () => {
-    document.body.classList.toggle("darkMode")
+    document.body.classList.toggle("darkMode");
+    squares.forEach(square => square.classList.toggle("squareDarkMode"));
+    input.classList.toggle("inputDarkMode");
 }
 
 updateCurrentState = () => {
