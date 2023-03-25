@@ -27,7 +27,7 @@ EXAMPLE: Bitstrings that start with 0 // Machine Name\n\
 1 // WIP! Number of Tapes\n\
 1 // WIP! Numbers of Tracks on Tape 0\n\
 2 // Tape 0 is 2-way infinite\n\
-s0 // Initial State\n\
+s0 // Initial State, states are seperated by spaces\n\
 s1 // Accepting State(s)\n\
 s0 0 s1 0 R // Transitions <state> <cell value> <next state> <next cell value> <next direction>\n\
 s0 1 s2 1 R\n\
