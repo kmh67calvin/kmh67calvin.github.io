@@ -1,1 +1,5 @@
-document.getElementById("testP").innerHTML = "test working";
+let testP = document.querySelector(".test");
+
+print = (stringToPrint) => {
+    testP.innerHTML = stringToPrint;
+}
