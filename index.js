@@ -100,6 +100,15 @@ reset = () => {
     clearInterval(mainUpdate);
     clearCells();
     displayTape();
+    inputAlphabet = [];
+    tapeAlphabet = [];
+    numberOfTapes = 0;
+    numberOfTracksOnTape0 = 0;
+    infiniteDirections = 0;
+    startState = "";
+    finalStates = "";
+    transitions = Object.create(null);
+    currentState = "";
 }
 
 toggleDarkMode = () => {
@@ -115,7 +124,6 @@ let infiniteDirections = 0;
 let startState = "";
 let finalStates = "";
 let transitions = Object.create(null);
-
 let currentState = "";
 
 interpretEditor = () => {
@@ -151,6 +159,10 @@ interpretTransitions = (transitionToInterpret) => {
 
     let transitionInfo = removeComment(transitionToInterpret).split(" ");
     if(transitionInfo.length != 5) {
+        return false;
+    }
+    // Check if the next character is part of the tape alphabet
+    if(!tapeAlphabet.includes(transitionInfo[3])) {
         return false;
     }
     transitions[transitionInfo[0] + "," + transitionInfo[1]] = {nextState: transitionInfo[2], nextCellValue: transitionInfo[3], nextDirection: transitionInfo[4]};
