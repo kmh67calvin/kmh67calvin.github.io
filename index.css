@@ -8,11 +8,18 @@ h1 {
 }
 
 .box {
-    box-shadow: 1 2 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   }
 
 .editorDiv {
     text-align: center;
+    vertical-align: top;
+}
+
+input{
+    width: 300px;
+    height: 250px;
+    vertical-align: top;
 }
 
 textarea {
