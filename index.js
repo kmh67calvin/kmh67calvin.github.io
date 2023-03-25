@@ -1,9 +1,10 @@
 const input = document.querySelector(".input");
-const squares = document.querySelectorAll(".square");
 const machine = document.querySelector(".machineDiv");
+const squares = document.querySelectorAll(".square");
 const speedInput = document.getElementById("speedSlider");
 const showCurrentState = document.getElementById("currentState");
 const loader = document.getElementById("loader");
+const tapes = document.getElementById("tapes");
 const fr = new FileReader();
 let mainUpdate;
 
@@ -21,8 +22,8 @@ let editor = CodeMirror(document.querySelector(".editor"), {
     value: '\
 ATM // Specify start\n\
 EXAMPLE: Bitstrings that start with 0 // Machine Name\n\
-0 1 // Input Alphabet\n\
-0 1 // Tape Alphabet\n\
+0 1 // Input Alphabet, blank is _\n\
+0 1 // Tape Alphabet, blank is _\n\
 1 // WIP! Number of Tapes\n\
 1 // WIP! Numbers of Tracks on Tape 0\n\
 2 // Tape 0 is 2-way infinite\n\
@@ -54,7 +55,11 @@ displayTape = () => {
         }
 
         if(typeof cellValue != "undefined") {
-            squares[squareIdx].innerHTML = cellValue;
+            if(cellValue == "_") {
+                squares[squareIdx].innerHTML = "";
+            } else {
+                squares[squareIdx].innerHTML = cellValue;
+            }
         } else {
             squares[squareIdx].innerHTML = "";
         }
@@ -101,7 +106,7 @@ getCharAtCurrentCell = () => {
     if(typeof character != "undefined") {
         return character;
     }
-    return ""; 
+    return "_"; 
 }
 
 speedInput.addEventListener("mouseup", function() {
@@ -166,7 +171,7 @@ let currentState = "";
 
 interpretEditor = () => {
     let lines = editor.getValue().split("\n");
-    // Bounding check
+    // Bounds check
     if(removeComment(lines[0]) != "ATM") {
         alert("First line must specify that the program is a Turing Machine file (ATM)!");
         return false;
@@ -179,6 +184,7 @@ interpretEditor = () => {
     inputAlphabet = removeComment(lines[2]).split(" ");
     tapeAlphabet = removeComment(lines[3]).split(" ");
     numberOfTapes = removeComment(lines[4]).split(" ");
+    
     numberOfTracksOnTape0 = removeComment(lines[5]).split(" ");
     infiniteDirections = removeComment(lines[6]).split(" ");
     startState, currentState = removeComment(lines[7]).split(" ");
