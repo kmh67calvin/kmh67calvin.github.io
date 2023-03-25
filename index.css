@@ -13,13 +13,19 @@ h1 {
 
 .editorDiv {
     text-align: center;
-    vertical-align: top;
+}
+
+vAlign{
+    text-align: top;
+}
+
+.spaces{
+    margin-bottom: 25px;
 }
 
 input{
     width: 300px;
-    height: 250px;
-    vertical-align: top;
+    height: 25px;
 }
 
 textarea {
