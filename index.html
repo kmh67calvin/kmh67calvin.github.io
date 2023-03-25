@@ -8,13 +8,16 @@
 
     <!--Editor-->
     <div class="editorDiv">
-        <label for="editorInput">Edit the Turing Machine</label><br>
-        <textarea class="editor" name="editorInput" rows="20" cols="100"></textarea>
+        <label for="input">Input</label><br>
+        <input type="text" class="input" name="input"></input><br>
+        <label for="editor">Edit the Turing Machine</label><br>
+        <textarea class="editor" name="editor" rows="20" cols="100"></textarea><br>
+        <button onclick="interpretEditor()">Compile</button>
     </div>
 
-    <!--TEST-->
-    <div class="testDiv">
-        <p class="test">HELLO</p>
+    <!--Machine Graphics-->
+    <div class="machineGraphicsDiv">
+        
     </div>
 
     <script src="index.js"></script>

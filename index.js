@@ -1,5 +1,8 @@
-let testP = document.querySelector(".test");
+const input = document.querySelector(".input");
+const editor = document.querySelector(".editor");
 
-print = (stringToPrint) => {
-    testP.innerHTML = stringToPrint;
+interpretEditor = () => {
+    let editorValue = editor.value;
+
+    alert(editorValue);
 }
