@@ -1,3 +1,3 @@
-# Web Turing Machine Simulator
+# Web Turing Machine Simulator Multi
 
-by Kenneth Howes and Lillian McAboy
+trying to set up multi-tape and multi-track turing machines
