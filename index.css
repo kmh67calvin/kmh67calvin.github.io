@@ -3,6 +3,7 @@ h1 {
     font-family: "Times New Roman", Times, serif;
     font-size: 45px;
 }
+
 .headerDiv{
     text-align: center;
 }
@@ -16,4 +17,18 @@ textarea {
     overflow-y: scroll;
     white-space: nowrap;
     resize: none;
+}
+
+.square {
+    height: 50px;
+    width: 50px;
+    background-color: #696969;
+    margin: 5px;
+    text-align: center;
+    line-height: 50px;
+}
+
+.machineDiv {
+    display: flex;
+    justify-content: center;
 }
