@@ -1,0 +1,15 @@
+h1 {
+    text-align: center;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 45px;
+}
+
+.editorDiv {
+    text-align: center;
+}
+
+textarea {
+    overflow-y: scroll;
+    white-space: nowrap;
+    resize: none;
+}
