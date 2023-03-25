@@ -2,6 +2,8 @@
 <html>
 <head>
     <link rel="stylesheet" href="index.css">
+    <script src="lib/codemirror.js"></script>
+    <link rel="stylesheet" href="lib/codemirror.css">
 </head>
 <body>
     <div class="box">
@@ -13,21 +15,22 @@
     </div>
 
     <!--Editor-->
-    <div class="editorDiv">
+    <div class="inputDiv">
         <label for="input">Input</label><br>
         <input type="text" class="input spaces" name="input"></input><br>
     </div>
-    <div class="editorDiv">
-        <label for="editor">Edit the Turing Machine</label><br>
-        <textarea class="editor spaces" name="editor" rows="20" cols="100"></textarea><br>
+
+    <div class="editor centerCodeEditor"></div>
+
+    <div id="buttonDiv" class="center">
         <button onclick="compile()">Compile</button>
     </div>
 
     <!--Machine Graphics-->
-    <div class="machineDiv">
-        <div class="square" id="sq1">1</div>
-        <div class="square" id="sq2">2</div>
-        <div class="square" id="sq2">3</div>
+    <div class="machineDiv">  
+        <div class="square" id="sq1"></div>
+        <div class="square" id="sq2"></div>
+        <div class="square" id="sq2"></div>
         <div class="square" id="sq2"></div>
         <div class="square" id="sq2"></div>
         <div class="square" id="sq2"></div>

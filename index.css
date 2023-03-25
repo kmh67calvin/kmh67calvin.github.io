@@ -12,8 +12,18 @@ h1 {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   }
 
-.editorDiv {
+.inputDiv {
     text-align: center;
+}
+
+.centerCodeEditor {
+    margin: auto;
+    width: 50%;
+}
+
+.center {
+    margin:auto;
+    width: 3%;
 }
 
 vAlign{

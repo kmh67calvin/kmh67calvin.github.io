@@ -1,17 +1,29 @@
 const input = document.querySelector(".input");
-const editor = document.querySelector(".editor");
 const squares = document.querySelectorAll(".square");
+
+let editor = CodeMirror(document.querySelector(".editor"), {
+    lineNumbers: true,
+    tabSize: 4,
+    value: '// Code goes here'
+});
+
+let cells = [];
 
 setInputToTape = () => {
     for(let i = 0; i < input.value.length; i++) {
-        squares[i].innerHTML = input.value[i];
+        cells.push(input.value[i]);
+    }
+}
+
+displayTape = () => {
+    for(let i = 0; i < squares.length; i++) {
+        squares[i] = cells[i];
     }
 }
 
 interpretEditor = () => {
-    alert(editor.value);
-    // let lines = editor.value.split("\n");
-    // lines.forEach(line => alert(line));
+    let lines = editor.getValue().split("\n");
+    lines.forEach(line => alert(line));
 }
 
 compile = () => {
