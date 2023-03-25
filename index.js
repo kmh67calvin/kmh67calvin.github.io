@@ -57,13 +57,14 @@ clearCells = () => {
 }
 
 compile = () => {
-    clearCells();
-    setInputToTape();
-    displayTape();
-    interpretEditor();
-    mainUpdate = setInterval(function() {
-        moveTapeRight();
-    }, speed);
+    if(interpretEditor()) {
+        reset();
+        setInputToTape();
+        displayTape();
+        mainUpdate = setInterval(function() {
+            doNext(currentState, getCharAtCurrentCell());
+        }, speed);
+    }
 }
 
 moveTapeRight = () => {
@@ -79,7 +80,7 @@ moveTapeLeft = () => {
 getCharAtCurrentCell = () => {
     let character;
     if(currentCell < 0) {
-        character = leftCells[Math.abs(0 - (cellIdx + 1))];;
+        character = leftCells[Math.abs(0 - (currentCell + 1))];;
     } else {
         character = cells[currentCell];
     }
@@ -105,7 +106,6 @@ toggleDarkMode = () => {
 }
 
 // Interpretation
-
 let inputAlphabet = [];
 let tapeAlphabet = [];
 let numberOfTapes = 0;
@@ -119,8 +119,13 @@ let currentState = "";
 
 interpretEditor = () => {
     let lines = editor.getValue().split("\n");
+    // Bounding check
     if(lines[0] != "ATM") {
         alert("First line must specify that the program is a Turing Machine file (ATM)!");
+        return false;
+    }
+    if(lines[lines.length - 1].toLowerCase() != "end") {
+        alert("Last line must specify the end of the program (END)!");
         return false;
     }
 
@@ -129,19 +134,20 @@ interpretEditor = () => {
     numberOfTapes = removeComment(lines[4]).split(" ");
     numberOfTracksOnTape0 = removeComment(lines[5]).split(" ");
     infiniteDirections = removeComment(lines[6]).split(" ");
-    startState = removeComment(lines[7]).split(" ");
+    startState, currentState = removeComment(lines[7]).split(" ");
     finalStates = removeComment(lines[8]).split(" ");
     // Remove the first 9 lines, leaving only the transitions
-    lines.splice(0, 9)
+    lines.splice(0, 9);
     
     lines.forEach(line => interpretTransitions(line));
+    return true;
 }
 
 interpretTransitions = (transitionToInterpret) => {
     if(transitionToInterpret.toLowerCase() == "end") {
         return true;
     }
-    
+
     let transitionInfo = removeComment(transitionToInterpret).split(" ");
     if(transitionInfo.length != 5) {
         return false;
@@ -152,4 +158,41 @@ interpretTransitions = (transitionToInterpret) => {
 
 removeComment = (lineToParse) => {
     return lineToParse.split("//")[0].trim();
+}
+
+// Executing the machine
+doNext = (state, cellValue) => {
+    let instructions = transitions[state + "," + cellValue];
+    if(typeof instructions != "undefined") {
+        currentState = instructions.nextState;
+        
+        if(currentCell < 0) {
+            leftCells[Math.abs(0 - (currentCell + 1))] = instructions.nextCellValue;
+        } else {
+            cells[currentCell] = instructions.nextCellValue;
+        }
+
+        if(instructions.nextDirection.toLowerCase() == "r") {
+            moveTapeRight();
+        } else {
+            moveTapeLeft();
+        }
+    } else {
+        // Machine has halted
+        if(finalStates.includes(currentState)) {
+            recognized();
+        } else {
+            notRecognized();
+        }
+    }
+}
+
+recognized = () => {
+    clearInterval(mainUpdate);
+    alert("recognized");
+}
+
+notRecognized = () => {
+    clearInterval(mainUpdate);
+    alert("not recognized");
 }
