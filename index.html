@@ -15,18 +15,19 @@
     </div>
 
     <!--Editor-->
-    <div class="inputDiv">
+    <div class="textCenter">
         <label for="input">Input</label><br>
         <input type="text" class="input spaces" name="input"></input><br>
     </div>
 
-    <div class="editor centerCodeEditor"></div>
+    <div class="editor centerCodeEditor editorBottomMargin"></div>
 
-    <div id="buttonDiv" class="center">
-        <button onclick="compile()">Compile</button>
+    <div class="textCenter buttonBottomMargin buttonGroup">
+        <button onclick="compile()" class="buttonSideMargin">Compile</button>
+        <button onclick="reset()" class="buttonSideMargin">Reset</button>
     </div>
 
-    <div class="center">
+    <div class="textCenter">
         <label for="speedSlider">Speed:</label><br>
         <input type="range" min="0" max="1000" value="500" id="speedSlider" name="speedSlider">
     </div>
@@ -47,6 +48,10 @@
         <div class="triangle center"></div>
     </div>
 
+    <!--Misc-->
+    <div id="darkModeButton">
+        <button onclick="toggleDarkMode()">Dark Mode</button>
+    </div>
     <script src="index.js"></script>
 </body>
 </html>

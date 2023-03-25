@@ -12,7 +12,7 @@ h1 {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   }
 
-.inputDiv {
+.textCenter {
     text-align: center;
 }
 
@@ -26,10 +26,6 @@ h1 {
     width: 0%;
 }
 
-vAlign{
-    text-align: top;
-}
-
 .spaces{
     margin-bottom: 25px;
 }
@@ -37,12 +33,6 @@ vAlign{
 input{
     width: 300px;
     height: 25px;
-}
-
-textarea {
-    overflow-y: scroll;
-    white-space: nowrap;
-    resize: none;
 }
 
 .square {
@@ -57,11 +47,6 @@ textarea {
 .machineDiv {
     display: flex;
     justify-content: center;
-    transition: left 5s right 5s;
-    transition-timing-function: ease-in-out;
-    position: relative;
-    left: 0px;
-    right: 0px;
 }
 
 .triangle {
@@ -72,6 +57,35 @@ textarea {
 	border-bottom: 50px solid #e6b44a;
 }
 
-#buttonDiv {
+.buttonBottomMargin {
     margin-bottom: 50px;
+}
+
+.editorBottomMargin {
+    margin-bottom: 25px;
+}
+
+.buttonSideMargin {
+    margin-right: 10px;
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: center;
+}
+
+body {
+    background-color: #ffebcd;
+    color: #001432;
+}
+
+.darkMode {
+    background-color: #001432;
+    color: #ffebcd;
+}
+
+#darkModeButton {
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
 }

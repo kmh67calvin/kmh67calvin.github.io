@@ -2,6 +2,7 @@ const input = document.querySelector(".input");
 const squares = document.querySelectorAll(".square");
 const machine = document.querySelector(".machineDiv");
 const speedInput = document.getElementById("speedSlider");
+let mainUpdate;
 machine.style.left = "0px";
 
 let editor = CodeMirror(document.querySelector(".editor"), {
@@ -46,7 +47,7 @@ clearCells = () => {
 
 interpretEditor = () => {
     let lines = editor.getValue().split("\n");
-    lines.forEach(line => alert(line));
+    // lines.forEach(line => alert(line));
 }
 
 compile = () => {
@@ -54,7 +55,7 @@ compile = () => {
     setInputToTape();
     displayTape();
     interpretEditor();
-    const interval = setInterval(function() {
+    mainUpdate = setInterval(function() {
         moveTapeRight();
     }, speed);
 }
@@ -83,6 +84,16 @@ getCharAtCurrentCell = () => {
     return ""; 
 }
 
-speedInput.addEventListener("change", function() {
+speedInput.addEventListener("mouseup", function() {
     speed = 1001 - speedInput.value;
 }, false);
+
+reset = () => {
+    clearInterval(mainUpdate);
+    clearCells();
+    displayTape();
+}
+
+toggleDarkMode = () => {
+    document.body.classList.toggle("darkMode")
+}
