@@ -12,6 +12,7 @@ let editor = CodeMirror(document.querySelector(".editor"), {
 let cells = [];
 let leftCells = [];
 let currentCell = 0;
+let speed = 1000;
 
 setInputToTape = () => {
     for(let i = 0; i < input.value.length; i++) {
@@ -20,11 +21,25 @@ setInputToTape = () => {
 }
 
 displayTape = () => {
-    for(let i = 0; i < squares.length; i++) {
-        if(typeof cells[i] != "undefined") {
-            squares[i].innerHTML = cells[i];
+    let cellValue = "";
+    for(let squareIdx = 0, cellIdx = (currentCell - 4); squareIdx < squares.length; squareIdx++, cellIdx++) {
+        if(cellIdx < 0) {
+            cellValue = leftCells[cellIdx];
+        } else {
+            cellValue = cells[cellIdx];
+        }
+
+        if(typeof cellValue != "undefined") {
+            squares[squareIdx].innerHTML = cellValue;
+        } else {
+            squares[squareIdx].innerHTML = "";
         }
     }
+}
+
+clearCells = () => {
+    cells = [];
+    leftCells = [];
 }
 
 interpretEditor = () => {
@@ -33,18 +48,35 @@ interpretEditor = () => {
 }
 
 compile = () => {
+    clearCells();
     setInputToTape();
     displayTape();
     interpretEditor();
-    moveTapeRight();    
+    const interval = setInterval(function() {
+        moveTapeRight();
+    }, speed);
 }
 
 moveTapeRight = () => {
-    machine.style.left = parseInt(machine.style.left) + 62 + "px";
     currentCell++;
+    displayTape();
 }
 
 moveTapeLeft = () => {
-    machine.style.left = parseInt(machine.style.left) - 62 + "px";
     currentCell--;
+    displayTape();
+}
+
+getCharAtCurrentCell = () => {
+    let character;
+    if(currentCell < 0) {
+        character = leftCells[currentCell];
+    } else {
+        character = cells[currentCell];
+    }
+
+    if(typeof character != "undefined") {
+        return character;
+    }
+    return ""; 
 }
