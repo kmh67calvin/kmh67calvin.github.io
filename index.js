@@ -18,7 +18,8 @@ ATM\n\
 2 // Tape 0 is 2-way infinite\n\
 s0 // Initial State\n\
 s1 // Final State(s)\n\
-s0 0 s1 1 R // Transitions <state> <cell value> <next state> <next cell value> <next direction>\
+s0 0 s1 1 R // Transitions <state> <cell value> <next state> <next cell value> <next direction>\n\
+end // Specify end\
 '
 });
 
