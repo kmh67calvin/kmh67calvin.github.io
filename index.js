@@ -1,5 +1,7 @@
 const input = document.querySelector(".input");
 const squares = document.querySelectorAll(".square");
+const machine = document.querySelector(".machineDiv");
+machine.style.left = "0px";
 
 let editor = CodeMirror(document.querySelector(".editor"), {
     lineNumbers: true,
@@ -8,6 +10,8 @@ let editor = CodeMirror(document.querySelector(".editor"), {
 });
 
 let cells = [];
+let leftCells = [];
+let currentCell = 0;
 
 setInputToTape = () => {
     for(let i = 0; i < input.value.length; i++) {
@@ -17,7 +21,9 @@ setInputToTape = () => {
 
 displayTape = () => {
     for(let i = 0; i < squares.length; i++) {
-        squares[i] = cells[i];
+        if(typeof cells[i] != "undefined") {
+            squares[i].innerHTML = cells[i];
+        }
     }
 }
 
@@ -28,5 +34,17 @@ interpretEditor = () => {
 
 compile = () => {
     setInputToTape();
+    displayTape();
     interpretEditor();
+    moveTapeRight();    
+}
+
+moveTapeRight = () => {
+    machine.style.left = parseInt(machine.style.left) + 62 + "px";
+    currentCell++;
+}
+
+moveTapeLeft = () => {
+    machine.style.left = parseInt(machine.style.left) - 62 + "px";
+    currentCell--;
 }
