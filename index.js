@@ -2,6 +2,7 @@ const input = document.querySelector(".input");
 const squares = document.querySelectorAll(".square");
 const machine = document.querySelector(".machineDiv");
 const speedInput = document.getElementById("speedSlider");
+const showCurrentState = document.getElementById("currentState");
 let mainUpdate;
 machine.style.left = "0px";
 
@@ -117,6 +118,10 @@ toggleDarkMode = () => {
     document.body.classList.toggle("darkMode")
 }
 
+updateCurrentState = () => {
+    showCurrentState.innerHTML = currentState;
+}
+
 // Interpretation
 let inputAlphabet = [];
 let tapeAlphabet = [];
@@ -149,18 +154,21 @@ interpretEditor = () => {
     finalStates = removeComment(lines[8]).split(" ");
     // Remove the first 9 lines, leaving only the transitions
     lines.splice(0, 9);
-    
-    // lines.forEach((line) => {
-    //     if(!interpretTransitions(line)) {
-    //         return false;
-    //     }
-    // });
 
+    // Interpret lines describing transition functions
     for(let i = 0; i < lines.length; i++) {
         if(!interpretTransitions(lines[i])) {
             return false;
         }
     }
+
+    // Check if the characters given in the input are all part of the input alphabet
+    for(let i = 0; i < input.value.length; i++) {
+        if(!inputAlphabet.includes(input.value[i])) {
+            return false;
+        }
+    }
+    updateCurrentState();
     return true;
 }
 
@@ -174,10 +182,11 @@ interpretTransitions = (transitionToInterpret) => {
     if(transitionInfo.length != 5) {
         return false;
     }
-    // Check if the next character is part of the tape alphabet
-    if(!tapeAlphabet.includes(transitionInfo[3]) || !tapeAlphabet.includes(transitionInfo[1])) {
+    // Check if the proposed next character and given character are part of the tape alphabet and that the next direction is either R or L
+    if(!tapeAlphabet.includes(transitionInfo[3]) || !tapeAlphabet.includes(transitionInfo[1]) || (transitionInfo[4].toLowerCase() != "r" && transitionInfo[4].toLowerCase() != "l")) {
         return false;
     }
+
     transitions[transitionInfo[0] + "," + transitionInfo[1]] = {nextState: transitionInfo[2], nextCellValue: transitionInfo[3], nextDirection: transitionInfo[4]};
     return true;
 }
@@ -191,6 +200,7 @@ doNext = (state, cellValue) => {
     let instructions = transitions[state + "," + cellValue];
     if(typeof instructions != "undefined") {
         currentState = instructions.nextState;
+        updateCurrentState();
         
         if(currentCell < 0) {
             leftCells[Math.abs(0 - (currentCell + 1))] = instructions.nextCellValue;

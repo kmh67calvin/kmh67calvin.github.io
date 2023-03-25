@@ -59,7 +59,7 @@ input{
 }
 
 .buttonBottomMargin {
-    margin-bottom: 50px;
+    margin-bottom: 25px;
 }
 
 .editorBottomMargin {
@@ -96,4 +96,10 @@ body {
     bottom: 0px;
     left: 0px;
     font-size: 12px;
+}
+
+.textGroup {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
 }
