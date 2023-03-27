@@ -87,6 +87,7 @@ compile = () => {
     numberOfTapes = removeComment(lines[4]).split(" ");
     for(let i = 0; i < numberOfTapes; i++) {
         totalNumberOfTracks += parseInt(removeComment(lines[5 + i]).split(" "));
+        currentCellPerTape.push(0);
     }
     inputs.innerHTML = "<label for=\"input\">Input</label><br>\n\
     <input type=\"text\" class=\"input spaces\" name=\"input\" id=\"input0\"></input><br>";
@@ -133,24 +134,15 @@ moveTapeLeft = (tapeIdx) => {
 
 getCharAtCurrentCell = () => {
     let final = "";
-
-    for(let i = 0; i < totalNumberOfTracks; i++) {
-        if(typeof leftCellsPerTrack[i][Math.abs(0 - (cell + 1))] != "undefined") {
-            sq[i + (9 * trackIdx)].innerHTML = leftCellsPerTrack[trackIdx][Math.abs(0 - (cell + 1))];
-        }
-    }
-    for(let i = 0; i < 9; i++, cell++) {
-        if(cell < 0) {
-            if(typeof leftCellsPerTrack[trackIdx][Math.abs(0 - (cell + 1))] != "undefined") {
-                sq[i + (9 * trackIdx)].innerHTML = leftCellsPerTrack[trackIdx][Math.abs(0 - (cell + 1))];
+    alert(numberOfTapes);
+    for(let tapeIdx = 0; tapeIdx < numberOfTapes; tapeIdx++) {
+        
+        for(let trackIdx = 0; trackIdx < totalNumberOfTracks; trackIdx++) {
+            // Concatenate slightly differently for the final entry
+            if(tapeIdx == tapes.length - 1) {
+                final += cellsPerTrack[trackIdx][currentCellPerTape[tapeIdx]];
             } else {
-                sq[i + (9 * trackIdx)].innerHTML = "";
-            }
-        } else {
-            if(typeof cellsPerTrack[trackIdx][cell] != "undefined") {
-                sq[i + (9 * trackIdx)].innerHTML = cellsPerTrack[trackIdx][cell];
-            } else {
-                sq[i + (9 * trackIdx)].innerHTML = "";
+                final += cellsPerTrack[trackIdx][currentCellPerTape[tapeIdx]] + "+";
             }
         }
     }
@@ -177,7 +169,6 @@ reset = () => {
     startState = "";
     finalStates = [];
     transitions = Object.create(null);
-    currentStatesPerTape = [];
     currentState = "";
     squares = [];
     updateCurrentState();
