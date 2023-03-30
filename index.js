@@ -433,21 +433,19 @@ document.getElementById("bstringsEndWithTwo0").addEventListener("click", () => {
     editor.setValue("\
 ATM // Specify start\n\
 EXAMPLE: Bitstrings that end in 2 zeros // Machine Name\n\
-0 1 // Input Alphabet, blank is _\n\
-0 1 A // Tape Alphabet, blank is _\n\
-2 // Number of Tapes\n\
+0 1 // Input Alphabet\n\
+0 1 ✔️ ❌ // Tape Alphabet, blank is _\n\
+1 // Number of Tapes\n\
 1 // Numbers of Tracks on Tape 0\n\
-3 // Numbers of Tracks on Tape 1\n\
 2 // Tape 0 is 2-way infinite\n\
-1 // Tape 1 is 1-way infinite\n\
 s0 // Initial State, states are seperated by spaces\n\
 s2 // Accepting State(s)\n\
-s0 0 s1 0 R // Transitions <state> <cell value> <next state> <next cell value> <next direction>\n\
-s0 1 s0 1 R\n\
-s1 0 s2 0 R\n\
-s1 1 s0 1 R\n\
-s2 0 s2 0 R\n\
-s2 1 s0 1 R\n\
+s0 0 s1 ✔️ R // Transitions <state> <cell value> <next state> <next cell value> <next direction>\n\
+s0 1 s0 ❌ R\n\
+s1 0 s2 ✔️ R\n\
+s1 1 s0 ❌ R\n\
+s2 0 s2 ✔️ R\n\
+s2 1 s0 ❌ R\n\
 END // Specify end\
 ")
 compile();
