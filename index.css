@@ -115,3 +115,7 @@ body {
     justify-content: center;
     margin-bottom: 25px;
 }
+
+.buttonText {
+    font-family: "Times New Roman", Times, serif;
+}
