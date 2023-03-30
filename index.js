@@ -116,6 +116,7 @@ clearCells = () => {
 }
 
 compile = () => {
+    clearInterval(mainUpdate);
     rerunButton.style.display = "none";
     totalNumberOfTracks = 0;
     let lines = editor.getValue().split("\n");
