@@ -414,7 +414,7 @@ notRecognized = () => {
 }
 
 // Examples
-document.getElementById("bstringsStartWith0").addEventListener("click", () => {
+["click", "touchend"].forEach(evt => { document.getElementById("bstringsStartWith0").addEventListener(evt, () => {
     editor.setValue("\
 ATM // Specify start\n\
 EXAMPLE: Bitstrings that start with 0 // Machine Name\n\
@@ -434,9 +434,9 @@ s2 1 s2 1 R\n\
 END // Specify end\
 ")
 compile();
-});
+})});
 
-document.getElementById("bstringsEndWithTwo0").addEventListener("click", () => {
+["click", "touchend"].forEach(evt => { document.getElementById("bstringsEndWithTwo0").addEventListener(evt, () => {
     editor.setValue("\
 ATM // Specify start\n\
 EXAMPLE: Bitstrings that end in 2 zeros // Machine Name\n\
@@ -456,9 +456,9 @@ s2 1 s0 ❌ R\n\
 END // Specify end\
 ")
 compile();
-});
+})});
 
-document.getElementById("bstringsStartWith10|00").addEventListener("click", () => {
+["click", "touchend"].forEach(evt => { document.getElementById("bstringsStartWith10|00").addEventListener(evt, () => {
     editor.setValue("\
 ATM // Specify start\n\
 EXAMPLE(MultiTrack): Bitstrings that start with 10 or 00 // Machine Name\n\
@@ -486,4 +486,4 @@ sG 1+_+_ sG 1+1+_ R+R\n\
 END // Specify end\
 ")
 compile();
-})
+})});
