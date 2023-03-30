@@ -120,8 +120,10 @@ compile = () => {
     totalNumberOfTracks = 0;
     let lines = editor.getValue().split("\n");
     numberOfTapes = removeComment(lines[4]).split(" ");
+    infiniteDirectionsPerTape = [];
     for(let i = 0; i < numberOfTapes; i++) {
         totalNumberOfTracks += parseInt(removeComment(lines[5 + i]).split(" "));
+        infiniteDirectionsPerTape.push(parseInt(removeComment(lines[parseInt(numberOfTapes) + 5 + i]).split(" ")));
     }
 
     if(totalNumberOfTracks != previousTotalNumberOfTracks || numberOfTapes != previousNumberOfTapes.toString()) {
@@ -141,7 +143,6 @@ compile = () => {
             squares.push([]);
 
             numberOfTracksPerTape.push(parseInt(removeComment(lines[5 + i]).split(" ")));
-            infiniteDirectionsPerTape.push(parseInt(removeComment(lines[parseInt(numberOfTapes) + 5 + i]).split(" ")));
 
             // Construct the tape in html
             for(let j = 0; j < numberOfTracksPerTape[i]; j++) {
