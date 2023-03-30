@@ -8,7 +8,7 @@
     <!--FileSaver for saving programs https://github.com/eligrey/FileSaver.js-->
     <script src="lib/FileSaver.js"></script>
 </head>
-<body onload="compile()">
+<body onload="editor.setValue(baseExamples[exampleSelector.options[exampleSelector.selectedIndex].id]); compile();">
     <div class="box">
     <h1>Turing Machine Simulator</h1>
     </div>
@@ -28,7 +28,7 @@
 
     <div class="textCenter">
         <label for="examples" class="buttonSideMargin">Examples: </label><br>
-        <select class="buttonSideMargin buttonBottomMargin" name="examples">
+        <select class="buttonSideMargin buttonBottomMargin" id="exampleSelector" name="examples">
             <option id="bstringsStartWith0">Bitstrings that start with 0</option>
             <option id="bstringsEndWithTwo0">Bitstrings that end with two 0's</option>
             <option id="bstringsStartWith10|00">(MT)Bitstrings that start with 10 or 00</option>
@@ -48,10 +48,13 @@
 
     <!--Buttons-->
     <div class="textCenter buttonBottomMargin buttonGroup">
-        
-        <!--<button onclick="compile()" class="buttonSideMargin">Compile</button>-->
         <button onclick="run()" class="buttonSideMargin">Run</button>
         <button onclick="reset()" class="buttonSideMargin">Reset</button>
+    </div>
+
+    <!--Reset w/ Output Button-->
+    <div class="buttonGroup">
+        <button onclick="rerunWithCurrentOutput()" id="rerunButton" style="display: none;">Rerun With Current Output</button>
     </div>
 
     <!--Information-->
@@ -62,11 +65,6 @@
 
     <!--Machine Graphics-->
     <div id="tapes">
-    </div>
-
-    <!--Reset w/ Output Button-->
-    <div class="buttonGroup">
-        <button onclick="rerunWithCurrentOutput()" id="rerunButton" style="display: none;">Rerun With Current Output</button>
     </div>
 
     <!--Misc-->

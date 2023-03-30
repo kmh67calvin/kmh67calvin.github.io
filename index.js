@@ -14,6 +14,7 @@ loader.addEventListener('change', (event) => {
 
 fr.addEventListener('load', (event) => {
     editor.setValue(event.target.result);
+    compile();
 });
 
 let editor = CodeMirror(document.querySelector(".editor"), {
@@ -432,8 +433,15 @@ rerunWithCurrentOutput = () => {
 }
 
 // Examples
-["click", "touchend"].forEach(evt => { document.getElementById("bstringsStartWith0").addEventListener(evt, () => {
-    editor.setValue("\
+const exampleSelector = document.getElementById("exampleSelector");
+exampleSelector.addEventListener("change", () => {
+    editor.setValue(baseExamples[exampleSelector.options[exampleSelector.selectedIndex].id]);
+    compile();
+});
+
+let baseExamples = new Object(null);
+// Example keys are the id of the selection option that should load the example
+baseExamples["bstringsStartWith0"] = "\
 ATM // Specify start\n\
 EXAMPLE: Bitstrings that start with 0 // Machine Name\n\
 0 1 // Input Alphabet\n\
@@ -450,12 +458,9 @@ s1 1 s1 1 R\n\
 s2 0 s2 0 R\n\
 s2 1 s2 1 R\n\
 END // Specify end\
-")
-compile();
-})});
+";
 
-["click", "touchend"].forEach(evt => { document.getElementById("bstringsEndWithTwo0").addEventListener(evt, () => {
-    editor.setValue("\
+baseExamples["bstringsEndWithTwo0"] = "\
 ATM // Specify start\n\
 EXAMPLE: Bitstrings that end in 2 zeros // Machine Name\n\
 0 1 // Input Alphabet\n\
@@ -472,12 +477,9 @@ s1 1 s0 ❌ R\n\
 s2 0 s2 ✔️ R\n\
 s2 1 s0 ❌ R\n\
 END // Specify end\
-")
-compile();
-})});
+";
 
-["click", "touchend"].forEach(evt => { document.getElementById("bstringsStartWith10|00").addEventListener(evt, () => {
-    editor.setValue("\
+baseExamples["bstringsStartWith10|00"] = "\
 ATM // Specify start\n\
 EXAMPLE(MultiTrack): Bitstrings that start with 10 or 00 // Machine Name\n\
 0 1 // Input Alphabet\n\
@@ -502,6 +504,4 @@ s10 1+_+_ s10 1+1+_ R+R\n\
 sG 0+_+_ sG 0+0+_ R+R\n\
 sG 1+_+_ sG 1+1+_ R+R\n\
 END // Specify end\
-")
-compile();
-})});
+";
