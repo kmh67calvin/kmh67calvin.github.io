@@ -411,7 +411,7 @@ document.getElementById("bstringsStartWith0").addEventListener("click", () => {
     editor.setValue("\
 ATM // Specify start\n\
 EXAMPLE: Bitstrings that start with 0 // Machine Name\n\
-0 1 // Input Alphabet, blank is _\n\
+0 1 // Input Alphabet\n\
 0 1 // Tape Alphabet, blank is _\n\
 1 // Number of Tapes\n\
 1 // Numbers of Tracks on Tape 0\n\
