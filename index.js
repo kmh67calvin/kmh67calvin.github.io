@@ -5,6 +5,7 @@ const showCurrentState = document.getElementById("currentState");
 const loader = document.getElementById("loader");
 const tapes = document.getElementById("tapes");
 const fr = new FileReader();
+const rerunButton = document.getElementById("rerunButton");
 let mainUpdate;
 
 loader.addEventListener('change', (event) => {
@@ -103,6 +104,7 @@ clearCells = () => {
 }
 
 compile = () => {
+    rerunButton.style.display = "none";
     totalNumberOfTracks = 0;
     let lines = editor.getValue().split("\n");
     numberOfTapes = removeComment(lines[4]).split(" ");
@@ -121,16 +123,17 @@ compile = () => {
 
         tapes.innerHTML = "";
         numberOfTracksPerTape = [];
-    for(let i = 0; i < numberOfTapes; i++) {
-        // New array to push squares of each track into
-        squares.push([]);
+        squares = [];
+        for(let i = 0; i < numberOfTapes; i++) {
+            // New array to push squares of each track into
+            squares.push([]);
 
-        numberOfTracksPerTape.push(parseInt(removeComment(lines[5 + i]).split(" ")));
-        infiniteDirectionsPerTape.push(parseInt(removeComment(lines[parseInt(numberOfTapes) + 5 + i]).split(" ")));
+            numberOfTracksPerTape.push(parseInt(removeComment(lines[5 + i]).split(" ")));
+            infiniteDirectionsPerTape.push(parseInt(removeComment(lines[parseInt(numberOfTapes) + 5 + i]).split(" ")));
 
-        // Construct the tape in html
-        for(let j = 0; j < numberOfTracksPerTape[i]; j++) {
-            tapes.innerHTML += "\
+            // Construct the tape in html
+            for(let j = 0; j < numberOfTracksPerTape[i]; j++) {
+                tapes.innerHTML += "\
 <div class=\"machineDiv\" id=\"track" + i + j + "\">\n\
     <div class=\"square\" id=\"s\"></div>\n\
     <div class=\"square\" id=\"s\"></div>\n\
@@ -149,7 +152,7 @@ compile = () => {
 <div id=\"head\">\n\
     <div class=\"triangle center\"></div>\n\
 </div>"
-    }
+        }
     }
 }
 
@@ -161,7 +164,7 @@ run = () => {
     for(let i = 0; i < totalNumberOfTracks; i++) {
         inputPerTrack.push(document.getElementById("input" + i).value);
     }
-
+    
     if(interpretEditor()) {
         setInputToCellData();
 
@@ -216,15 +219,16 @@ reset = () => {
     
     inputAlphabet = [];
     tapeAlphabet = [];
-    numberOfTapes = 0;
+    // numberOfTapes = 0;
     // numberOfTracksPerTape = [];
-    infiniteDirectionsPerTape = [];
+    // infiniteDirectionsPerTape = [];
     startState = "";
     finalStates = [];
     transitions = Object.create(null);
     currentState = "";
-    squares = [];
+    // squares = [];
     updateCurrentState();
+    rerunButton.style.display = "none";
 }
 
 toggleDarkMode = () => {
@@ -283,9 +287,7 @@ interpretEditor = () => {
     inputAlphabet = removeComment(lines[2]).split(" ");
     tapeAlphabet = removeComment(lines[3]).split(" ");
     numberOfTapes = removeComment(lines[4]).split(" ");
-
-    // MARKING HTML CONSTRUCTION
-
+    
     for(let tapeIdx = 0; tapeIdx < numberOfTapes; tapeIdx++) {
         for(let trackIdx = 0; trackIdx < numberOfTracksPerTape[tapeIdx]; trackIdx++) {
             // Push individual tracks
@@ -293,7 +295,7 @@ interpretEditor = () => {
         }
     }
 
-    startState, currentState = removeComment(lines[(2 * numberOfTapes) + 5]).split(" ");
+    startState = currentState = removeComment(lines[(2 * numberOfTapes) + 5]).split(" ");
     finalStates = removeComment(lines[(2 * numberOfTapes) + 6]).split(" ");
 
     // Remove the config lines, leaving only the transitions
@@ -400,6 +402,7 @@ doNext = (state, cellValue) => {
         } else {
             notRecognized();
         }
+        rerunButton.style.display = "block";
     }
 }
 
@@ -411,6 +414,21 @@ recognized = () => {
 notRecognized = () => {
     clearInterval(mainUpdate);
     alert("not recognized");
+}
+
+rerunWithCurrentOutput = () => {
+    currentState = startState;
+    updateCurrentState();
+
+    currentCellPerTape = []
+    for(let i = 0; i < numberOfTapes; i++) {
+        currentCellPerTape.push(0);
+        displayTracksPerTape(i);
+    }
+
+    mainUpdate = setInterval(function() {
+        doNext(currentState, getCharAtCurrentCell());
+    }, speed);
 }
 
 // Examples
