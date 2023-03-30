@@ -21,7 +21,7 @@ let editor = CodeMirror(document.querySelector(".editor"), {
     value: '\
 ATM // Specify start\n\
 EXAMPLE: Bitstrings that start with 0 // Machine Name\n\
-0 1 // Input Alphabet, blank is _\n\
+0 1 // Input Alphabet\n\
 0 1 // Tape Alphabet, blank is _\n\
 1 // Number of Tapes\n\
 1 // Numbers of Tracks on Tape 0\n\
@@ -141,7 +141,7 @@ run = () => {
         }, speed);
 
     } else {
-        alert("Issue encountered in code!");
+        alert("Issue encountered in code at line " + errorLine + "!");
     }
 }
 
@@ -232,6 +232,7 @@ let finalStates = [];
 let transitions = Object.create(null);
 let squares = [];
 let currentState = "";
+let errorLine = 0;
 
 interpretEditor = () => {
     let lines = editor.getValue().split("\n");
@@ -290,9 +291,10 @@ interpretEditor = () => {
 
     // Remove the config lines, leaving only the transitions
     lines.splice(0, (2 * numberOfTapes) + 7);
-
+    
     // Interpret lines describing transition functions
-    for(let i = 0; i < lines.length; i++) {
+    errorLine = (2 * numberOfTapes) + 7 + 1;
+    for(let i = 0; i < lines.length; i++, errorLine++) {
         if(!interpretTransitions(lines[i])) {
             return false;
         }

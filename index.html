@@ -19,18 +19,28 @@
     <!--Editor-->
     <div class="editor centerCodeEditor editorBottomMargin"></div>
 
+    <div class="textCenter">
+        <label for="examples" class="buttonSideMargin">Examples: </label><br>
+        <select class="buttonSideMargin buttonBottomMargin" name="examples">
+            <option id="bstringsStartWith0">Bitstrings that start with 0</option>
+            <option id="bstringsEndWithTwo0">Bitstrings that end with two 0's</option>
+        </select>
+    </div>
+
     <div class="textCenter" id="inputs">
         <label for="input">Input</label><br>
         <input type="text" class="input spaces" name="input" id="inputString"></input><br>
     </div>
 
+    <!--Speed Slider-->
+    <div class="textCenter">
+        <label for="speedSlider">Speed:</label><br>
+        <input type="range" min="0" max="1000" value="500" id="speedSlider" name="speedSlider">
+    </div>
+
     <!--Buttons-->
     <div class="textCenter buttonBottomMargin buttonGroup">
-        <label for="examples" class="buttonSideMargin">Examples: </label>
-        <select class="buttonSideMargin" name="examples">
-            <option id="bstringsStartWith0">Bitstrings that start with 0</option>
-            <option id="bstringsEndWithTwo0">Bitstrings that end with two 0's</option>
-        </select>
+        
         <!--<button onclick="compile()" class="buttonSideMargin">Compile</button>-->
         <button onclick="run()" class="buttonSideMargin">Run</button>
         <button onclick="reset()" class="buttonSideMargin">Reset</button>
@@ -44,12 +54,6 @@
     <div class="textCenter textGroup">
         <p class="buttonSideMargin">Current State: </p>
         <p id="currentState"></p>
-    </div>
-
-    <!--Speed Slider-->
-    <div class="textCenter">
-        <label for="speedSlider">Speed:</label><br>
-        <input type="range" min="0" max="1000" value="500" id="speedSlider" name="speedSlider">
     </div>
 
     <!--Machine Graphics-->
