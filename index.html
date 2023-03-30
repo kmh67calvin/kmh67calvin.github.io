@@ -17,19 +17,19 @@
     </div>
 
     <!--Editor-->
+    <div class="editor centerCodeEditor editorBottomMargin"></div>
+
     <div class="textCenter" id="inputs">
         <label for="input">Input</label><br>
         <input type="text" class="input spaces" name="input" id="inputString"></input><br>
     </div>
 
-    <div class="editor centerCodeEditor editorBottomMargin"></div>
-
     <!--Buttons-->
     <div class="textCenter buttonBottomMargin buttonGroup">
         <label for="examples" class="buttonSideMargin">Examples: </label>
         <select class="buttonSideMargin" name="examples">
-            <option onclick="bstringsStartWith0()">Bitstrings that start with 0</option>
-            <option onclick="bstringsEndWithTwo0()">Bitstrings that end with two 0's</option>
+            <option id="bstringsStartWith0">Bitstrings that start with 0</option>
+            <option id="bstringsEndWithTwo0">Bitstrings that end with two 0's</option>
         </select>
         <!--<button onclick="compile()" class="buttonSideMargin">Compile</button>-->
         <button onclick="run()" class="buttonSideMargin">Run</button>
