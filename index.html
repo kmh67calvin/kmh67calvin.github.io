@@ -8,7 +8,7 @@
     <!--FileSaver for saving programs https://github.com/eligrey/FileSaver.js-->
     <script src="lib/FileSaver.js"></script>
 </head>
-<body>
+<body onload="compile()">
     <div class="box">
     <h1>Turing Machine Simulator</h1>
     </div>
@@ -19,7 +19,7 @@
     <!--Editor-->
     <div class="textCenter" id="inputs">
         <label for="input">Input</label><br>
-        <input type="text" class="input spaces" name="input"></input><br>
+        <input type="text" class="input spaces" name="input" id="inputString"></input><br>
     </div>
 
     <div class="editor centerCodeEditor editorBottomMargin"></div>
@@ -31,7 +31,7 @@
             <option onclick="bstringsStartWith0()">Bitstrings that start with 0</option>
             <option onclick="bstringsEndWithTwo0()">Bitstrings that end with two 0's</option>
         </select>
-        <button onclick="compile()" class="buttonSideMargin">Compile</button>
+        <!--<button onclick="compile()" class="buttonSideMargin">Compile</button>-->
         <button onclick="run()" class="buttonSideMargin">Run</button>
         <button onclick="reset()" class="buttonSideMargin">Reset</button>
         <button onclick="copy()" class="buttonSideMargin">Copy</button>

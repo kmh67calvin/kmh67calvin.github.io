@@ -23,8 +23,8 @@ ATM // Specify start\n\
 EXAMPLE: Bitstrings that start with 0 // Machine Name\n\
 0 1 // Input Alphabet, blank is _\n\
 0 1 // Tape Alphabet, blank is _\n\
-1 // WIP! Number of Tapes\n\
-1 // WIP! Numbers of Tracks on Tape 0\n\
+1 // Number of Tapes\n\
+1 // Numbers of Tracks on Tape 0\n\
 2 // Tape 0 is 2-way infinite\n\
 s0 // Initial State, states are seperated by spaces\n\
 s1 // Accepting State(s)\n\
@@ -38,65 +38,90 @@ END // Specify end\
 '
 });
 
-let cellsPerTrack = [];
-let leftCellsPerTrack = [];
+document.querySelector(".editor").addEventListener("keyup", () => {
+    compile();
+});
+
+let cellsPerTapePerTrack = [];
+let leftCellsPerTapePerTrack = [];
 let currentCellPerTape = [];
 let speed = 1001 - speedInput.value;
 let totalNumberOfTracks = 0;
 let inputPerTrack = [];
+let previousTotalNumberOfTracks = 0;
 
-setInputToTrack = (trackIdx) => {
-    cellsPerTrack.push([]);
-    leftCellsPerTrack.push([]);
-    for(let i = 0; i < inputPerTrack[trackIdx].length; i++) {
-        cellsPerTrack[trackIdx].push(inputPerTrack[trackIdx][i]);
+setInputToCellData = () => {
+    // Used to keep track of the "global" (not in relation to tapes) number of tracks completed
+    let currentTrack = 0;
+    
+    // Push tapes
+    for(let tapeIdx = 0; tapeIdx < numberOfTapes; tapeIdx++) {
+        cellsPerTapePerTrack.push([]);
+        leftCellsPerTapePerTrack.push([]);        
+
+        // Push tracks
+        let trackCount = numberOfTracksPerTape[tapeIdx];
+        for(let trackIdx = 0; trackIdx < trackCount; trackIdx++, currentTrack++) {
+            cellsPerTapePerTrack[tapeIdx].push([]);
+            leftCellsPerTapePerTrack[tapeIdx].push([]);
+
+            // Push individual values from input string(s)
+            for(let cellIdx = 0; cellIdx < inputPerTrack[currentTrack].length; cellIdx++) {
+                cellsPerTapePerTrack[tapeIdx][trackIdx].push(inputPerTrack[currentTrack][cellIdx]);
+            }
+        }
     }
 }
 
-displayTrack = (trackIdx, currentCell) => {
-    let sq = document.querySelectorAll("#s");
-    let cell = currentCell - 4;
-    for(let i = 0; i < 9; i++, cell++) {
-        if(cell < 0) {
-            if(typeof leftCellsPerTrack[trackIdx][Math.abs(0 - (cell + 1))] != "undefined") {
-                sq[i + (9 * trackIdx)].innerHTML = leftCellsPerTrack[trackIdx][Math.abs(0 - (cell + 1))];
+displayTracksPerTape = (tapeIdx) => {
+    let trackCount = numberOfTracksPerTape[tapeIdx];
+    for(let trackIdx = 0; trackIdx < trackCount; trackIdx++) {
+        // cell is offset by 4 because the first square in a track is 4 left from the cell over which is the head (i.e. the center square)
+        for(let squareIdx = 0, cell = (currentCellPerTape[tapeIdx] - 4); squareIdx < 9; squareIdx++, cell++) {
+            if(cell < 0) {
+                if(typeof leftCellsPerTapePerTrack[tapeIdx][trackIdx][Math.abs(0 - (cell + 1))] != "undefined" && leftCellsPerTapePerTrack[tapeIdx][trackIdx][Math.abs(0 - (cell + 1))] != "_") {
+                    squares[tapeIdx][trackIdx][squareIdx].innerHTML = leftCellsPerTapePerTrack[tapeIdx][trackIdx][Math.abs(0 - (cell + 1))];
+                } else {
+                    squares[tapeIdx][trackIdx][squareIdx].innerHTML = "";
+                }
             } else {
-                sq[i + (9 * trackIdx)].innerHTML = "";
-            }
-        } else {
-            if(typeof cellsPerTrack[trackIdx][cell] != "undefined") {
-                sq[i + (9 * trackIdx)].innerHTML = cellsPerTrack[trackIdx][cell];
-            } else {
-                sq[i + (9 * trackIdx)].innerHTML = "";
+                if(typeof cellsPerTapePerTrack[tapeIdx][trackIdx][cell] != "undefined" && cellsPerTapePerTrack[tapeIdx][trackIdx][cell] != "_") {
+                    squares[tapeIdx][trackIdx][squareIdx].innerHTML = cellsPerTapePerTrack[tapeIdx][trackIdx][cell];
+                } else {
+                    squares[tapeIdx][trackIdx][squareIdx].innerHTML = "";
+                }
             }
         }
     }
 }
 
 clearCells = () => {
-    cellsPerTrack = [];
-    leftCellsPerTrack = [];
+    cellsPerTapePerTrack = [];
+    leftCellsPerTapePerTrack = [];
     currentCellPerTape = [];
 }
 
 compile = () => {
-    reset();
-
     totalNumberOfTracks = 0;
     let lines = editor.getValue().split("\n");
     numberOfTapes = removeComment(lines[4]).split(" ");
     for(let i = 0; i < numberOfTapes; i++) {
         totalNumberOfTracks += parseInt(removeComment(lines[5 + i]).split(" "));
-        currentCellPerTape.push(0);
     }
-    inputs.innerHTML = "<label for=\"input\">Input</label><br>\n\
-    <input type=\"text\" class=\"input spaces\" name=\"input\" id=\"input0\"></input><br>";
-    for(let i = 1; i < totalNumberOfTracks; i++) {
-        inputs.innerHTML += "<input type=\"text\" class=\"input spaces\" name=\"input\" id=\"input" + i + "\"></input><br>";
+
+    if(totalNumberOfTracks != previousTotalNumberOfTracks) {
+        inputs.innerHTML = "<label for=\"input\">Input</label><br>\n\
+        <input type=\"text\" class=\"input spaces\" name=\"input\" id=\"input0\"></input><br>";
+        for(let i = 1; i < totalNumberOfTracks; i++) {
+            inputs.innerHTML += "<input type=\"text\" class=\"input spaces\" name=\"input\" id=\"input" + i + "\"></input><br>";
+        }
+        previousTotalNumberOfTracks = totalNumberOfTracks;
     }
 }
 
 run = () => {
+    reset();
+
     // Set up each track
     inputPerTrack = [];
     for(let i = 0; i < totalNumberOfTracks; i++) {
@@ -104,15 +129,17 @@ run = () => {
     }
 
     if(interpretEditor()) {
-        for(let i = 0; i < totalNumberOfTracks; i++) {
-            setInputToTrack(i);
-            displayTrack(i, 0);
+        setInputToCellData();
+
+        for(let i = 0; i < numberOfTapes; i++) {
+            currentCellPerTape.push(0);
+            displayTracksPerTape(i);
         }
+
         mainUpdate = setInterval(function() {
-            for(let i = 0; i < numberOfTapes; i++) {
-                doNext(currentState, getCharAtCurrentCell(i), i);
-            }
+            doNext(currentState, getCharAtCurrentCell());
         }, speed);
+
     } else {
         alert("Issue encountered in code!");
     }
@@ -120,32 +147,28 @@ run = () => {
 
 moveTapeRight = (tapeIdx) => {
     currentCellPerTape[tapeIdx]++;
-    for(let i = 0; i < totalNumberOfTracks; i++) {
-        displayTrack(i, currentCellPerTape[tapeIdx]);
-    }
+    displayTracksPerTape(tapeIdx);
 }
 
 moveTapeLeft = (tapeIdx) => {
     currentCellPerTape[tapeIdx]--;
-    for(let i = 0; i < totalNumberOfTracks; i++) {
-        displayTrack(i, currentCellPerTape[tapeIdx]);
-    }
+    displayTracksPerTape(tapeIdx);
 }
 
 getCharAtCurrentCell = () => {
     let final = "";
-    alert(numberOfTapes);
     for(let tapeIdx = 0; tapeIdx < numberOfTapes; tapeIdx++) {
-        
-        for(let trackIdx = 0; trackIdx < totalNumberOfTracks; trackIdx++) {
-            // Concatenate slightly differently for the final entry
-            if(tapeIdx == tapes.length - 1) {
-                final += cellsPerTrack[trackIdx][currentCellPerTape[tapeIdx]];
+        for(let trackIdx = 0; trackIdx < numberOfTracksPerTape[tapeIdx]; trackIdx++) {
+            if(typeof cellsPerTapePerTrack[tapeIdx][trackIdx][currentCellPerTape[tapeIdx]] == "undefined" || cellsPerTapePerTrack[tapeIdx][trackIdx][currentCellPerTape[tapeIdx]] == "") {
+                final += "_+";
             } else {
-                final += cellsPerTrack[trackIdx][currentCellPerTape[tapeIdx]] + "+";
+                final += cellsPerTapePerTrack[tapeIdx][trackIdx][currentCellPerTape[tapeIdx]] + "+";
             }
         }
     }
+    // Remove the final, hanging "+"
+    final = final.slice(0, -1);
+    return(final);
 }
 
 speedInput.addEventListener("mouseup", function() {
@@ -156,10 +179,6 @@ reset = () => {
     tapes.innerHTML = "";
     clearInterval(mainUpdate);
     clearCells();
-    
-    // for(let i = 0; i < totalNumberOfTracks; i++) {
-    //     displayTrack(i);
-    // }
     
     inputAlphabet = [];
     tapeAlphabet = [];
@@ -211,7 +230,6 @@ let infiniteDirectionsPerTape = [];
 let startState = "";
 let finalStates = [];
 let transitions = Object.create(null);
-let currentStatesPerTape = [];
 let squares = [];
 let currentState = "";
 
@@ -231,6 +249,9 @@ interpretEditor = () => {
     tapeAlphabet = removeComment(lines[3]).split(" ");
     numberOfTapes = removeComment(lines[4]).split(" ");
     for(let i = 0; i < numberOfTapes; i++) {
+        // New array to push squares of each track into
+        squares.push([]);
+
         numberOfTracksPerTape.push(parseInt(removeComment(lines[5 + i]).split(" ")));
         infiniteDirectionsPerTape.push(parseInt(removeComment(lines[parseInt(numberOfTapes) + 5 + i]).split(" ")));
 
@@ -249,15 +270,22 @@ interpretEditor = () => {
     <div class=\"square\" id=\"s\"></div>\n\
 </div>\n\
         "
-        squares.push(document.getElementById("track" + i + j));
         }
+        // Add the head of the current tape
         tapes.innerHTML += "\
 <div id=\"head\">\n\
     <div class=\"triangle center\"></div>\n\
 </div>"
     }
 
-    startState = removeComment(lines[(2 * numberOfTapes) + 5]).split(" ");
+    for(let tapeIdx = 0; tapeIdx < numberOfTapes; tapeIdx++) {
+        for(let trackIdx = 0; trackIdx < numberOfTracksPerTape[tapeIdx]; trackIdx++) {
+            // Push individual tracks
+            squares[tapeIdx].push(document.getElementById("track" + tapeIdx + trackIdx).children);
+        }
+    }
+
+    startState, currentState = removeComment(lines[(2 * numberOfTapes) + 5]).split(" ");
     finalStates = removeComment(lines[(2 * numberOfTapes) + 6]).split(" ");
 
     // Remove the config lines, leaving only the transitions
@@ -301,20 +329,30 @@ interpretTransitions = (transitionToInterpret) => {
             return false;
         }
     }
+    
+    // Parse the next cell value info and next direction info
+    newCellChars = transitionInfo[3].split("+");
+    newDirections = transitionInfo[4].split("+");
 
-    let nextCellChars = transitionInfo[3].split("+");
-    for(let i = 0; i < nextCellChars.length; i++) {
-        if(!tapeAlphabet.includes(nextCellChars[i])){
+    // Check that the next cell values and next directions are valid
+    if(newCellChars.length != totalNumberOfTracks || newDirections.length != numberOfTapes) {
+        return false;
+    }
+
+    for(let i = 0; i < newCellChars.length; i++) {
+        if(!tapeAlphabet.includes(newCellChars[i])){
             return false;
         }
     }
 
     // And that the next direction is either R or L
-    if(transitionInfo[4].toLowerCase() != "r" && transitionInfo[4].toLowerCase() != "l") {
-        return false;
+    for(let i = 0; i < newDirections.length; i++) {
+        if(newDirections[i].toLowerCase() != "r" && newDirections[i].toLowerCase() != "l") {
+            return false;
+        }
     }
 
-    transitions[transitionInfo[0] + "," + transitionInfo[1]] = {nextState: transitionInfo[2], nextCellValue: transitionInfo[3], nextDirection: transitionInfo[4]};
+    transitions[transitionInfo[0] + "," + transitionInfo[1]] = {nextState: transitionInfo[2], nextCellValuePerTrack: newCellChars, nextDirectionPerTape: newDirections};
     return true;
 }
 
@@ -323,23 +361,29 @@ removeComment = (lineToParse) => {
 }
 
 // Executing the machine
-doNext = (state, cellValue, tapeIdx) => {
+doNext = (state, cellValue) => {
+    let currentGlobalTrack = 0;
     let instructions = transitions[state + "," + cellValue];
+
     if(typeof instructions != "undefined") {
         currentState = instructions.nextState;
         updateCurrentState();
-        
-        if(currentCell < 0) {
-            leftCells[Math.abs(0 - (currentCell + 1))] = instructions.nextCellValue;
-        } else {
-            cells[currentCell] = instructions.nextCellValue;
-        }
 
-        if(instructions.nextDirection.toLowerCase() == "r") {
-            moveTapeRight(tapeIdx);
-        } else {
-            moveTapeLeft(tapeIdx);
-        }
+        for(let tapeIdx = 0; tapeIdx < numberOfTapes; tapeIdx++) {
+            for(let trackIdx = 0; trackIdx < numberOfTracksPerTape[tapeIdx]; trackIdx++, currentGlobalTrack++) {
+                if(currentCellPerTape[tapeIdx] < 0) {
+                    leftCellsPerTapePerTrack[tapeIdx][trackIdx][Math.abs(0 - (currentCellPerTape[tapeIdx] + 1))] = instructions.nextCellValuePerTrack[currentGlobalTrack];
+                } else {
+                    cellsPerTapePerTrack[tapeIdx][trackIdx][currentCellPerTape[tapeIdx]] = instructions.nextCellValuePerTrack[currentGlobalTrack];
+                }
+            }
+
+            if(instructions.nextDirectionPerTape[tapeIdx].toLowerCase() == "r") {
+                moveTapeRight(tapeIdx);
+            } else {
+                moveTapeLeft(tapeIdx);
+            }
+        } 
     } else {
         // Machine has halted
         if(finalStates.includes(currentState)) {
