@@ -49,6 +49,7 @@ let speed = 1001 - speedInput.value;
 let totalNumberOfTracks = 0;
 let inputPerTrack = [];
 let previousTotalNumberOfTracks = 0;
+let previousNumberOfTapes = 0;
 
 setInputToCellData = () => {
     // Used to keep track of the "global" (not in relation to tapes) number of tracks completed
@@ -109,13 +110,46 @@ compile = () => {
         totalNumberOfTracks += parseInt(removeComment(lines[5 + i]).split(" "));
     }
 
-    if(totalNumberOfTracks != previousTotalNumberOfTracks) {
+    if(totalNumberOfTracks != previousTotalNumberOfTracks || numberOfTapes != previousNumberOfTapes) {
         inputs.innerHTML = "<label for=\"input\">Input</label><br>\n\
         <input type=\"text\" class=\"input spaces\" name=\"input\" id=\"input0\"></input><br>";
         for(let i = 1; i < totalNumberOfTracks; i++) {
             inputs.innerHTML += "<input type=\"text\" class=\"input spaces\" name=\"input\" id=\"input" + i + "\"></input><br>";
         }
         previousTotalNumberOfTracks = totalNumberOfTracks;
+        previousNumberOfTapes = numberOfTapes;
+
+        tapes.innerHTML = "";
+        numberOfTracksPerTape = [];
+    for(let i = 0; i < numberOfTapes; i++) {
+        // New array to push squares of each track into
+        squares.push([]);
+
+        numberOfTracksPerTape.push(parseInt(removeComment(lines[5 + i]).split(" ")));
+        infiniteDirectionsPerTape.push(parseInt(removeComment(lines[parseInt(numberOfTapes) + 5 + i]).split(" ")));
+
+        // Construct the tape in html
+        for(let j = 0; j < numberOfTracksPerTape[i]; j++) {
+            tapes.innerHTML += "\
+<div class=\"machineDiv\" id=\"track" + i + j + "\">\n\
+    <div class=\"square\" id=\"s\"></div>\n\
+    <div class=\"square\" id=\"s\"></div>\n\
+    <div class=\"square\" id=\"s\"></div>\n\
+    <div class=\"square\" id=\"s\"></div>\n\
+    <div class=\"square\" id=\"s\"></div>\n\
+    <div class=\"square\" id=\"s\"></div>\n\
+    <div class=\"square\" id=\"s\"></div>\n\
+    <div class=\"square\" id=\"s\"></div>\n\
+    <div class=\"square\" id=\"s\"></div>\n\
+</div>\n\
+        "
+        }
+        // Add the head of the current tape
+        tapes.innerHTML += "\
+<div id=\"head\">\n\
+    <div class=\"triangle center\"></div>\n\
+</div>"
+    }
     }
 }
 
@@ -176,14 +210,14 @@ speedInput.addEventListener("mouseup", function() {
 }, false);
 
 reset = () => {
-    tapes.innerHTML = "";
+    // tapes.innerHTML = "";
     clearInterval(mainUpdate);
     clearCells();
     
     inputAlphabet = [];
     tapeAlphabet = [];
     numberOfTapes = 0;
-    numberOfTracksPerTape = [];
+    // numberOfTracksPerTape = [];
     infiniteDirectionsPerTape = [];
     startState = "";
     finalStates = [];
@@ -249,35 +283,8 @@ interpretEditor = () => {
     inputAlphabet = removeComment(lines[2]).split(" ");
     tapeAlphabet = removeComment(lines[3]).split(" ");
     numberOfTapes = removeComment(lines[4]).split(" ");
-    for(let i = 0; i < numberOfTapes; i++) {
-        // New array to push squares of each track into
-        squares.push([]);
 
-        numberOfTracksPerTape.push(parseInt(removeComment(lines[5 + i]).split(" ")));
-        infiniteDirectionsPerTape.push(parseInt(removeComment(lines[parseInt(numberOfTapes) + 5 + i]).split(" ")));
-
-        // Construct the tape in html
-        for(let j = 0; j < numberOfTracksPerTape[i]; j++) {
-            tapes.innerHTML += "\
-<div class=\"machineDiv\" id=\"track" + i + j + "\">\n\
-    <div class=\"square\" id=\"s\"></div>\n\
-    <div class=\"square\" id=\"s\"></div>\n\
-    <div class=\"square\" id=\"s\"></div>\n\
-    <div class=\"square\" id=\"s\"></div>\n\
-    <div class=\"square\" id=\"s\"></div>\n\
-    <div class=\"square\" id=\"s\"></div>\n\
-    <div class=\"square\" id=\"s\"></div>\n\
-    <div class=\"square\" id=\"s\"></div>\n\
-    <div class=\"square\" id=\"s\"></div>\n\
-</div>\n\
-        "
-        }
-        // Add the head of the current tape
-        tapes.innerHTML += "\
-<div id=\"head\">\n\
-    <div class=\"triangle center\"></div>\n\
-</div>"
-    }
+    // MARKING HTML CONSTRUCTION
 
     for(let tapeIdx = 0; tapeIdx < numberOfTapes; tapeIdx++) {
         for(let trackIdx = 0; trackIdx < numberOfTracksPerTape[tapeIdx]; trackIdx++) {
@@ -373,9 +380,9 @@ doNext = (state, cellValue) => {
 
         for(let tapeIdx = 0; tapeIdx < numberOfTapes; tapeIdx++) {
             for(let trackIdx = 0; trackIdx < numberOfTracksPerTape[tapeIdx]; trackIdx++, currentGlobalTrack++) {
-                if(currentCellPerTape[tapeIdx] < 0) {
+                if(infiniteDirectionsPerTape[tapeIdx] == "2" && currentCellPerTape[tapeIdx] < 0) {
                     leftCellsPerTapePerTrack[tapeIdx][trackIdx][Math.abs(0 - (currentCellPerTape[tapeIdx] + 1))] = instructions.nextCellValuePerTrack[currentGlobalTrack];
-                } else {
+                } else if (currentCellPerTape[tapeIdx] >= 0) {
                     cellsPerTapePerTrack[tapeIdx][trackIdx][currentCellPerTape[tapeIdx]] = instructions.nextCellValuePerTrack[currentGlobalTrack];
                 }
             }
@@ -450,3 +457,33 @@ END // Specify end\
 ")
 compile();
 });
+
+document.getElementById("bstringsStartWith10|00").addEventListener("click", () => {
+    editor.setValue("\
+ATM // Specify start\n\
+EXAMPLE(MultiTrack): Bitstrings that start with 10 or 00 // Machine Name\n\
+0 1 // Input Alphabet\n\
+0 1 _ // Tape Alphabet, blank is _\n\
+2 // Number of Tapes\n\
+1 // Number of Tracks on Tape 0\n\
+2 // Number of Tracks on Tape 1\n\
+2 // Tape 0 is 2-way infinite\n\
+1 // Tape 1 is 1-way infinite\n\
+sN // Initial State, states are seperated by spaces\n\
+s10 or s00 // Accepting State(s)\n\
+sN 0+_+_ s0 0+0+_ R+R // Transitions <state> <cell value> <next state> <next cell value> <next direction>\n\
+sN 1+_+_ s1 1+1+_ R+R\n\
+s0 0+_+_ s00 0+0+_ R+R\n\
+s0 1+_+_ sG 1+1+_ R+R\n\
+s1 0+_+_ s10 0+0+_ R+R\n\
+s1 1+_+_ sG 1+1+_ R+R\n\
+s00 0+_+_ s00 0+0+_ R+R\n\
+s00 1+_+_ s00 1+1+_ R+R\n\
+s10 0+_+_ s10 0+0+_ R+R\n\
+s10 1+_+_ s10 1+1+_ R+R\n\
+sG 0+_+_ sG 0+0+_ R+R\n\
+sG 1+_+_ sG 1+1+_ R+R\n\
+END // Specify end\
+")
+compile();
+})
