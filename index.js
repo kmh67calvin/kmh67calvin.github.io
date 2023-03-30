@@ -52,6 +52,17 @@ let totalNumberOfTracks = 0;
 let inputPerTrack = [];
 let previousTotalNumberOfTracks = 0;
 let previousNumberOfTapes = 0;
+let inputAlphabet = [];
+let tapeAlphabet = [];
+let numberOfTapes = 0;
+let numberOfTracksPerTape = [];
+let infiniteDirectionsPerTape = [];
+let startState = "";
+let finalStates = [];
+let transitions = Object.create(null);
+let squares = [];
+let currentState = "";
+let errorLine = 0;
 
 setInputToCellData = () => {
     // Used to keep track of the "global" (not in relation to tapes) number of tracks completed
@@ -113,7 +124,7 @@ compile = () => {
         totalNumberOfTracks += parseInt(removeComment(lines[5 + i]).split(" "));
     }
 
-    if(totalNumberOfTracks != previousTotalNumberOfTracks || numberOfTapes != previousNumberOfTapes) {
+    if(totalNumberOfTracks != previousTotalNumberOfTracks || numberOfTapes != previousNumberOfTapes.toString()) {
         inputs.innerHTML = "<label for=\"input\">Input</label><br>\n\
         <input type=\"text\" class=\"input spaces\" name=\"input\" id=\"input0\"></input><br>";
         for(let i = 1; i < totalNumberOfTracks; i++) {
@@ -261,18 +272,6 @@ load = () => {
 }
 
 // Interpretation
-let inputAlphabet = [];
-let tapeAlphabet = [];
-let numberOfTapes = 0;
-let numberOfTracksPerTape = [];
-let infiniteDirectionsPerTape = [];
-let startState = "";
-let finalStates = [];
-let transitions = Object.create(null);
-let squares = [];
-let currentState = "";
-let errorLine = 0;
-
 interpretEditor = () => {
     let lines = editor.getValue().split("\n");
     // Bounds check
