@@ -210,15 +210,27 @@ getCharAtCurrentCell = () => {
     let final = "";
     for(let tapeIdx = 0; tapeIdx < numberOfTapes; tapeIdx++) {
         for(let trackIdx = 0; trackIdx < numberOfTracksPerTape[tapeIdx]; trackIdx++) {
-            if(typeof cellsPerTapePerTrack[tapeIdx][trackIdx][currentCellPerTape[tapeIdx]] == "undefined" || cellsPerTapePerTrack[tapeIdx][trackIdx][currentCellPerTape[tapeIdx]] == "") {
-                final += "_+";
+            if(currentCellPerTape[tapeIdx] < 0) {
+                // Look at left infinite cells
+                if(typeof leftCellsPerTapePerTrack[tapeIdx][trackIdx][Math.abs(currentCellPerTape[tapeIdx] + 1)] == "undefined" || leftCellsPerTapePerTrack[tapeIdx][trackIdx][Math.abs(currentCellPerTape[tapeIdx] + 1)] == "") {
+                    final += "_+";
+                } else {
+                    final += leftCellsPerTapePerTrack[tapeIdx][trackIdx][Math.abs(currentCellPerTape[tapeIdx] + 1)] + "+";
+                }
             } else {
-                final += cellsPerTapePerTrack[tapeIdx][trackIdx][currentCellPerTape[tapeIdx]] + "+";
+                // Look at right infinite cells
+                if(typeof cellsPerTapePerTrack[tapeIdx][trackIdx][currentCellPerTape[tapeIdx]] == "undefined" || cellsPerTapePerTrack[tapeIdx][trackIdx][currentCellPerTape[tapeIdx]] == "") {
+                    final += "_+";
+                } else {
+                    final += cellsPerTapePerTrack[tapeIdx][trackIdx][currentCellPerTape[tapeIdx]] + "+";
+                }
             }
         }
     }
+    
     // Remove the final, hanging "+"
     final = final.slice(0, -1);
+    
     return(final);
 }
 
@@ -504,5 +516,24 @@ s10 0+_+_ s10 0+0+_ R+R\n\
 s10 1+_+_ s10 1+1+_ R+R\n\
 sG 0+_+_ sG 0+0+_ R+R\n\
 sG 1+_+_ sG 1+1+_ R+R\n\
+END // Specify end\
+";
+
+baseExamples["bouncer"] = "\
+ATM // Specify start\n\
+EXAMPLE: Bouncer // Machine Name\n\
+0 1 // Input Alphabet\n\
+0 1 _ // Tape Alphabet, blank is _\n\
+1 // Number of Tapes\n\
+1 // Numbers of Tracks on Tape 0\n\
+2 // Tape 0 is 2-way infinite\n\
+sR // Initial State, states are seperated by spaces\n\
+s0 // Accepting State(s)\n\
+sR 0 sR 0 R // Transitions <state> <cell value> <next state> <next cell value> <next direction>\n\
+sR 1 sR 1 R\n\
+sR _ sL 0 L\n\
+sL 0 sL 0 L\n\
+sL 1 sL 1 L\n\
+sL _ sR 1 R\n\
 END // Specify end\
 ";
