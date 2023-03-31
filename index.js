@@ -6,6 +6,7 @@ const loader = document.getElementById("loader");
 const tapes = document.getElementById("tapes");
 const fr = new FileReader();
 const rerunButton = document.getElementById("rerunButton");
+const recognizeText = document.getElementById("recognizeText");
 let mainUpdate;
 
 loader.addEventListener('change', (event) => {
@@ -117,7 +118,8 @@ clearCells = () => {
 
 compile = () => {
     clearInterval(mainUpdate);
-    rerunButton.style.display = "none";
+    rerunButton.disabled = true;
+    recognizeText.innerHTML = "N/A";
     totalNumberOfTracks = 0;
     let lines = editor.getValue().split("\n");
     numberOfTapes = removeComment(lines[4]).split(" ");
@@ -202,8 +204,12 @@ moveTapeRight = (tapeIdx) => {
 }
 
 moveTapeLeft = (tapeIdx) => {
-    currentCellPerTape[tapeIdx]--;
-    displayTracksPerTape(tapeIdx);
+    if(infiniteDirectionsPerTape[tapeIdx] == "1") {
+        crash("Segmentation Fault");
+    } else {
+        currentCellPerTape[tapeIdx]--;
+        displayTracksPerTape(tapeIdx);
+    }
 }
 
 getCharAtCurrentCell = () => {
@@ -254,7 +260,8 @@ reset = () => {
     currentState = "";
     // squares = [];
     updateCurrentState();
-    rerunButton.style.display = "none";
+    rerunButton.disabled = true;
+    recognizeText.innerHTML = "N/A";
 }
 
 toggleDarkMode = () => {
@@ -264,7 +271,7 @@ toggleDarkMode = () => {
 }
 
 updateCurrentState = () => {
-    showCurrentState.innerHTML = currentState;
+    showCurrentState.innerHTML = "Current State: " + currentState;
 }
 
 copy = () => {
@@ -416,21 +423,27 @@ doNext = (state, cellValue) => {
         } else {
             notRecognized();
         }
-        rerunButton.style.display = "block";
+        rerunButton.disabled = false;
     }
 }
 
 recognized = () => {
     clearInterval(mainUpdate);
-    alert("recognized");
+    recognizeText.innerHTML = "Recognized";
 }
 
 notRecognized = () => {
     clearInterval(mainUpdate);
-    alert("not recognized");
+    recognizeText.innerHTML = "Not Recognized";
+}
+
+crash = (errorMessage) => {
+    clearInterval(mainUpdate);
+    recognizeText.innerHTML = "Crashed: " + errorMessage;
 }
 
 rerunWithCurrentOutput = () => {
+    recognizeText.innerHTML = "N/A";
     currentState = startState;
     updateCurrentState();
 
@@ -447,10 +460,10 @@ rerunWithCurrentOutput = () => {
 
 // Examples
 const exampleSelector = document.getElementById("exampleSelector");
-exampleSelector.addEventListener("change", () => {
+loadExample = () => {
     editor.setValue(baseExamples[exampleSelector.options[exampleSelector.selectedIndex].id]);
     compile();
-});
+}
 
 let baseExamples = new Object(null);
 // Example keys are the id of the selection option that should load the example

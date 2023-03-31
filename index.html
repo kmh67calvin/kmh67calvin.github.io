@@ -19,22 +19,21 @@
     <!--Editor-->
     <div class="editor centerCodeEditor editorBottomMargin"></div>
 
-    <div class="textCenter buttonBottomMargin buttonGroup">
-        <button onclick="copy()" class="buttonSideMargin">Copy</button>
-        <button onclick="download()" class="buttonSideMargin">Download</button>
-        <input type="file" name="load" class="buttonSideMargin" style="display:none" id="loader"></button>
-        <button onclick="load()" class="buttonSideMargin">Load</button>
-    </div>
-
-    <div class="textCenter">
-        <label for="examples" class="buttonSideMargin">Examples: </label><br>
+    <span class="textCenter buttonBottomMargin" style="display: table; margin: auto;">
+        <label for="examples" class="buttonSideMargin">Examples: </label>
         <select class="buttonSideMargin buttonBottomMargin" id="exampleSelector" name="examples">
             <option id="bstringsStartWith0">Bitstrings that start with 0</option>
             <option id="bstringsEndWithTwo0">Bitstrings that end with two 0's</option>
             <option id="bstringsStartWith10|00">(MT)Bitstrings that start with 10 or 00</option>
             <option id="bouncer">Bouncer</option>
         </select>
-    </div>
+        <button onclick="loadExample()" class="buttonSideMargin">Load Example</button>
+
+        <button onclick="copy()" class="buttonSideMargin">Copy</button>
+        <button onclick="download()" class="buttonSideMargin">Download</button>
+        <input type="file" name="load" class="buttonSideMargin" style="display:none" id="loader"></button>
+        <button onclick="load()" class="buttonSideMargin">Load from File</button>
+    </span>
 
     <div class="textCenter" id="inputs">
         <label for="input">Input</label><br>
@@ -55,13 +54,15 @@
 
     <!--Reset w/ Output Button-->
     <div class="buttonGroup">
-        <button onclick="rerunWithCurrentOutput()" id="rerunButton" style="display: none;">Rerun With Current Output</button>
+        <button onclick="rerunWithCurrentOutput()" id="rerunButton">Rerun With Current Output</button>
     </div>
 
     <!--Information-->
-    <div class="textCenter textGroup">
-        <p class="buttonSideMargin">Current State: </p>
-        <p id="currentState"></p>
+    <div id="info">
+        <span class="textCenter">
+            <p id="currentState">Current State: </p>
+            <p id="recognizeText">N/A</p>
+        </span>
     </div>
 
     <!--Machine Graphics-->
