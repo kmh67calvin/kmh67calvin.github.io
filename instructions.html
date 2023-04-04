@@ -10,6 +10,35 @@
         <a href="index.html">Back To Machine</a>
     </div>
 
+    <div id="programming" class="infoText">
+        <p class="sectionHeader">Programming</p>
+        <p>
+            <span>All code must begin on the first line with "ATM" to specify that it is A Turing Machine code.</span><br>
+            <span>Addtionally all code must end with "END" to specify the end.</span><br>
+            <span>Comments may be made as the final part of any line, but may not be on a line by themselves.</span>
+        </p>
+        <p>
+            <span>After the first line ("ATM") begins the configuration section, which is written as follows:</span><br>
+            <span>Line 2) The name of the machine (if downloaded, the file will have this name as well)</span><br>
+            <span>Line 3) The input alphabet, where each valid character is seperated from its nieghbor by a space.</span><br>
+            <span class="tabbedSpan">    Example) "0 1" would be line 3 for a machine accepting bitstrings as input.</span><br>
+            <span>Line 4) The tape alphabet, where each valid character is seperated from its nieghbor by a space.</span><br>
+            <span class="tabbedSpan">    Exmaple) "0 1 _" would be line 4 for a machine able to read and write bitstrings and the blank character.</span><br>
+            <span>--Note-- To include the blank character in the tape alphabet, use an underscore (_).</span><br>
+            <span>Line 5) The number of tapes (n)</span><br>
+            <span>Line(s) 6 through 5 + n) The number of tracks for tape n. The number of tracks needs to be specified for every tape.</span><br>
+            <span>Lines(s) 5 + n through 5 + 2n) The infinite directions (1 or 2 way) for tape n. The infinite directions needs to be specified for every tape.</span><br>
+            <span>Line 5 + 2n + 1) The initial state of the machine, i.e. the state the machine will begin at when the run starts.</span><br>
+            <span>Line 5 + 2n + 2) The accepting or final states of the machine.</span>
+        </p>
+        <p>
+            <span>Line 5 + 2n + 3 begins the transition function section.</span><br>
+            <span>There can be any number of transition functions greater than or equal to 1.</span><br>
+            <span>Transition functions are written in the form "[state needed for this function to be called] [character needed for this function to be called] [new state into which transition] [new character to write] [direction to move tape head]"</span><br>
+            <span>[character needed for this function to be called] and [new character to write] need to be characters of the tape alphabet</span><br>
+        </p>
+    </div>
+
 
     <!--Misc-->
     <div id="darkModeButton">

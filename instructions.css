@@ -32,3 +32,17 @@ body {
     left: 0px;
     font-size: 12px;
 }
+
+.sectionHeader {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.infoText {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.tabbedSpan {
+    position: relative;
+    left: 20px;
+}

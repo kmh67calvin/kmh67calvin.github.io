@@ -550,3 +550,17 @@ sL 1 sL 1 L\n\
 sL _ sR 1 R\n\
 END // Specify end\
 ";
+
+baseExamples["quickStart"] = "\
+ATM\n\
+Quick Start // Machine Name\n\
+0 1 // Input Alphabet\n\
+0 1 _ // Tape Alphabet, blank is _\n\
+1 // Number of Tapes\n\
+1 // Numbers of Tracks on Tape 0\n\
+2 // Tape 0 is 2-way infinite\n\
+s0 // Initial State\n\
+s0 // Accepting State(s)\n\
+s0 0 s0 0 R // Transitions\n\
+END\
+";
