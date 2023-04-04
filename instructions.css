@@ -28,8 +28,8 @@ body {
 
 #credits {
     position: fixed;
-    bottom: 0px;
-    left: 0px;
+    top: 0px;
+    right: 0px;
     font-size: 12px;
 }
 
@@ -42,7 +42,20 @@ body {
     font-family: 'Times New Roman', Times, serif;
 }
 
-.tabbedSpan {
+span {
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+.tabbed {
     position: relative;
     left: 20px;
+}
+
+.parent {
+    margin-bottom: 5px;
+}
+
+p {
+    margin-bottom: 40px;
 }
